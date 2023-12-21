@@ -53,5 +53,5 @@ replace = "{new_version}"
 
 [[tool.bumpversion.files]]
 filename = "README.md"
-search = {current_version}
-replace = {new_version}
+search = "{current_version}"
+replace = "{new_version}"

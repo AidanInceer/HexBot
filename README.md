@@ -12,13 +12,12 @@
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=<sonar.projectKey>&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=<sonar.projectKey>)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=<sonar.projectKey>&metric=bugs)](https://sonarcloud.io/summary/new_code?id=<sonar.projectKey>)
 
-[![version](0.1.0)]
+[![version]("0.1.0")]
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
 
 ## Introduction
-
 
 ## Getting Started
 
