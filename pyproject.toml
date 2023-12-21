@@ -30,7 +30,7 @@ filterwarnings = "ignore::DeprecationWarning"
 
 [tool.bumpversion]
 allow_dirty = false
-commit = false
+commit = true
 message = "Bump version: {current_version} → {new_version}"
 commit_args = ""
 tag = false
