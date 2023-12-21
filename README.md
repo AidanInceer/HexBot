@@ -1,4 +1,4 @@
-# <project_name>
+# <HexBot>
 
 [![Build](https://github.com/AidanInceer/<project_name>/actions/workflows/build.yml/badge.svg)](https://github.com/AidanInceer/<project_name>/actions/workflows/build.yml)
 [![Lint](https://github.com/AidanInceer/<project_name>/actions/workflows/lint.yml/badge.svg)](https://github.com/AidanInceer/<project_name>/actions/workflows/lint.yml)
