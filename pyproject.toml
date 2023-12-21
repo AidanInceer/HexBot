@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "HexBot"
-version = "0.1.0""
+version = "0.1.0"
 description = "HexBot"
 authors = ["AidanInceer"]
 readme = "README.md"
@@ -42,9 +42,6 @@ parse = "(?P<major>\\d+)\\.(?P<minor>\\d+)\\.(?P<patch>\\d+)"
 serialize = [
     "{major}.{minor}.{patch}"
 ]
-search = "{current_version}"
-replace = "{new_version}"
-
 
 [[tool.bumpversion.files]]
 filename = "pyproject.toml"
