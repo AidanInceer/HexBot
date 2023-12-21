@@ -10,12 +10,12 @@
 [![Test](https://github.com/AidanInceer/<project_name>/actions/workflows/test.yml/badge.svg)](https://github.com/AidanInceer/<project_name>/actions/workflows/test.yml)
 [![Scan](https://github.com/AidanInceer/<project_name>/actions/workflows/scan.yml/badge.svg)](https://github.com/AidanInceer/<project_name>/actions/workflows/scan.yml)
 
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=<sonar.projectKey>&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=<sonar.projectKey>)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=<sonar.projectKey>&metric=coverage)](https://sonarcloud.io/summary/new_code?id=<sonar.projectKey>)
-[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=<sonar.projectKey>&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=<sonar.projectKey>)
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=<sonar.projectKey>&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=<sonar.projectKey>)
-[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=<sonar.projectKey>&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=<sonar.projectKey>)
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=<sonar.projectKey>&metric=bugs)](https://sonarcloud.io/summary/new_code?id=<sonar.projectKey>)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=AidanInceer_HexBot&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=AidanInceer_HexBot)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=AidanInceer_HexBot&metric=coverage)](https://sonarcloud.io/summary/new_code?id=AidanInceer_HexBot)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=AidanInceer_HexBot&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=AidanInceer_HexBot)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=AidanInceer_HexBot&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=AidanInceer_HexBot)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=AidanInceer_HexBot&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=AidanInceer_HexBot)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=AidanInceer_HexBot&metric=bugs)](https://sonarcloud.io/summary/new_code?id=AidanInceer_HexBot)
 
 ## Introduction
 
