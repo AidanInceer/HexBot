@@ -14,7 +14,7 @@
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=<sonar.projectKey>&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=<sonar.projectKey>)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=<sonar.projectKey>&metric=bugs)](https://sonarcloud.io/summary/new_code?id=<sonar.projectKey>)
 
-[![version]("0.1.0")]
+[![version]("0.1.1")]
 
 ## Introduction
 
