@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "HexBot"
-version = "0.1.1"
+version = "0.1.0""
 description = "HexBot"
 authors = ["AidanInceer"]
 readme = "README.md"
@@ -53,5 +53,10 @@ replace = "{new_version}"
 
 [[tool.bumpversion.files]]
 filename = "README.md"
+search = "{current_version}"
+replace = "{new_version}"
+
+[[tool.bumpversion.files]]
+filename = "version.svg"
 search = "{current_version}"
 replace = "{new_version}"
