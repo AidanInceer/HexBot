@@ -37,7 +37,6 @@ version_files = [
     "pyproject.toml:version"
 ]
 name = "cz_conventional_commits"
-changelog_file = CHANGELOG.md
 changelog_incremental = true
 tag_format = "$major.$minor.$patch"
 version_scheme = "semver"
