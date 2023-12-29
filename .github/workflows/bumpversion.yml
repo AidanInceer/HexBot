@@ -1,9 +1,8 @@
 name: Bump Version
 
 on:
-  pull_request:
+  push:
     branches: [ "main" ]
-    types: [opened, synchronize, reopened]
 
 jobs:
   bump-version:
