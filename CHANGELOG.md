@@ -4,6 +4,12 @@
 
 - add commitizen
 
+## 0.0.1 (2023-12-29)
+
+### Feat
+
+- add commitizen
+
 ## 0.2.0 (2023-12-29)
 
 ### Feat
