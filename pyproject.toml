@@ -1,7 +1,7 @@
 [tool]
 [tool.poetry]
 name = "HexBot"
-version = "0.1.0"
+version = "0.1.1"
 description = "HexBot"
 authors = ["AidanInceer"]
 readme = "README.md"
