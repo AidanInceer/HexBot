@@ -32,7 +32,12 @@ filterwarnings = "ignore::DeprecationWarning"
 
 [tool.commitizen]
 version = "0.2.0"
+version_files = [
+    "README.md",
+    "pyproject.toml:version"
+]
 name = "cz_conventional_commits"
+changelog_file = CHANGELOG.md
 changelog_incremental = true
 tag_format = "$major.$minor.$patch"
 version_scheme = "semver"
