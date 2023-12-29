@@ -1,3 +1,15 @@
+## 0.4.0 (2023-12-29)
+
+### Feat
+
+- add auto release when merging to main
+
+### Fix
+
+- remove release
+- test
+- test
+
 ## 0.3.0 (2023-12-29)
 
 ### Feat
