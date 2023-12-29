@@ -1,3 +1,14 @@
+## 0.3.0 (2023-12-29)
+
+### Feat
+
+- update changelog
+
+### Fix
+
+- increment changelog
+- change when version is run
+
 ## 0.2.1 (2023-12-29)
 
 ### Fix
