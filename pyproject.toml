@@ -1,7 +1,7 @@
 [tool]
 [tool.poetry]
 name = "HexBot"
-version = "0.2.0"
+version = "0.0.1"
 description = "HexBot"
 authors = ["AidanInceer"]
 readme = "README.md"
@@ -23,40 +23,20 @@ torch = "^2.1.2"
 bump-my-version = "^0.15.3"
 poetry-plugin-export = "^1.6.0"
 gitchangelog = "^3.0.4"
+commitizen = "^3.13.0"
 
 
 [tool.pytest.ini_options]
 filterwarnings = "ignore::DeprecationWarning"
 
 
-[tool.bumpversion]
-allow_dirty = false
-commit = true
-message = "Bump version: {current_version} → {new_version}"
-commit_args = ""
-tag = false
-sign_tags = false
-tag_name = "v{new_version}"
-tag_message = "Bump version: {current_version} → {new_version}"
-current_version = "0.2.0"
-parse = "(?P<major>\\d+)\\.(?P<minor>\\d+)\\.(?P<patch>\\d+)"
-serialize = [
-    "{major}.{minor}.{patch}"
-]
-search = "{current_version}"
-replace = "{new_version}"
-
-
-[[tool.bumpversion.files]]
-filename = "pyproject.toml"
-search = "{current_version}"
-replace = "{new_version}"
-
-[[tool.bumpversion.files]]
-filename = "README.md"
-search = "{current_version}"
-replace = "{new_version}"
-
+[tool.commitizen]
+name = "cz_conventional_commits"
+tag_format = "0.0.1"
+version_scheme = "semver"
+version_provider = "poetry"
+update_changelog_on_bump = true
+major_version_zero = true
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
