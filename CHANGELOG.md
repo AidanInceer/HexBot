@@ -1,3 +1,9 @@
+## 0.2.0 (2023-12-29)
+
+### Feat
+
+- add basic terrain hexes
+
 ## 0.1.2 (2023-12-29)
 
 ### Refactor
