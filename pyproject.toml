@@ -1,7 +1,7 @@
 [tool]
 [tool.poetry]
 name = "HexBot"
-version = "0.1.1"
+version = "0.2.1"
 description = "HexBot"
 authors = ["AidanInceer"]
 readme = "README.md"
@@ -31,6 +31,11 @@ filterwarnings = "ignore::DeprecationWarning"
 
 
 [tool.commitizen]
+version = "0.2.1"
+version_files = [
+    "README.md",
+    "pyproject.toml:version"
+]
 name = "cz_conventional_commits"
 tag_format = "$major.$minor.$patch"
 version_scheme = "semver"

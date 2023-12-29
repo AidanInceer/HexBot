@@ -1,3 +1,26 @@
+## 0.2.1 (2023-12-29)
+
+### Fix
+
+- remove file for changelog
+- update toml rules
+- add change log
+- delete change log
+- update changelog path
+- Add incremental changelog
+
+## 0.2.0 (2023-12-29)
+
+### Feat
+
+- add basic terrain hexes
+
+## 0.1.2 (2023-12-29)
+
+### Refactor
+
+- auto release in cicd
+
 ## 0.1.1 (2023-12-29)
 
 ### Fix
@@ -17,18 +40,6 @@
 - update version
 
 ## 0.0.1 (2023-12-29)
-
-### Feat
-
-- add commitizen
-
-## 0.0.1 (2023-12-29)
-
-### Feat
-
-- add commitizen
-
-## 0.2.0 (2023-12-29)
 
 ### Feat
 
