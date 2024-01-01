@@ -16,6 +16,18 @@ class Board:
     harbors: Optional[List[Harbor]] = None
     tiles: Optional[List[Tile]] = None
 
+    def get_node(self, node_id: int) -> Node:
+        return self.nodes[node_id - 1]
+
+    def get_edge(self, edge_id: int) -> Edge:
+        return self.edges[edge_id - 1]
+
+    def get_harbor(self, harbor_id: int) -> Harbor:
+        return self.harbors[harbor_id - 1]
+
+    def active_tiles(self, roll: int) -> List[Tile]:
+        return [tile for tile in self.tiles if tile.token == roll]
+
     def generate(self) -> None:
         # generate nodes, edges, harbors, tiles - obects are mapped and linked using
         # the mapping.py file and their internal init methods
@@ -92,31 +104,3 @@ class Board:
                 tile.token = random.choice(tokens)
                 tokens.remove(tile.token)
         return self.tiles
-
-    def link_nodes_to_nodes(self, node_mapping: dict[str, List[int]]):
-        for node in self.nodes:
-            node.add_near_nodes(node_mapping)
-
-    def link_nodes_to_edges(self, node_mapping: dict[str, List[int]]):
-        for node in self.nodes:
-            node.add_near_edges(node_mapping)
-
-    def link_nodes_to_harbors(self, node_mapping: dict[str, List[int]]):
-        for node in self.nodes:
-            node.add_near_harbors(node_mapping)
-
-    def link_nodes_to_tiles(self, node_mapping: dict[str, List[int]]):
-        for node in self.nodes:
-            node.add_near_tiles(node_mapping)
-
-    def link_edges_to_nodes(self, edge_mapping: dict[str, List[int]]):
-        for edge in self.edges:
-            edge.add_near_nodes(edge_mapping)
-
-    def link_harbors_to_nodes(self, harbor_mapping: dict[str, List[int]]):
-        for harbor in self.harbors:
-            harbor.add_near_nodes(harbor_mapping)
-
-    def link_tiles_to_nodes(self, tile_mapping: dict[str, List[int]]):
-        for tile in self.tiles:
-            tile.add_near_nodes(tile_mapping)
