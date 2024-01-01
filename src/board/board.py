@@ -58,39 +58,35 @@ class Board:
         ]
 
     def generate_tiles(self) -> List[Tile]:
-        tile_ids = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
+        tile_ids = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
         random.shuffle(tile_ids)
 
         self.tiles = []
-        # append Desert tiles
-        for index in range(1):
-            self.tiles.append(Tile(type=Desert(), id=tile_ids[index]))
-            tile_ids[1:]
 
-        # append Fields tiles
-        for index in range(4):
-            self.tiles.append(Tile(type=Fields(), id=tile_ids[index]))
-            tile_ids[1:]
+        self.tiles.append(Tile(type=Desert(), id=tile_ids[0]))
 
-        # append Forest tiles
-        for index in range(4):
-            self.tiles.append(Tile(type=Forest(), id=tile_ids[index]))
-            tile_ids[1:]
+        self.tiles.append(Tile(type=Fields(), id=tile_ids[1]))
+        self.tiles.append(Tile(type=Fields(), id=tile_ids[2]))
+        self.tiles.append(Tile(type=Fields(), id=tile_ids[3]))
+        self.tiles.append(Tile(type=Fields(), id=tile_ids[4]))
 
-        # append Hills tiles
-        for index in range(3):
-            self.tiles.append(Tile(type=Hills(), id=tile_ids[index]))
-            tile_ids[1:]
+        self.tiles.append(Tile(type=Forest(), id=tile_ids[5]))
+        self.tiles.append(Tile(type=Forest(), id=tile_ids[6]))
+        self.tiles.append(Tile(type=Forest(), id=tile_ids[7]))
+        self.tiles.append(Tile(type=Forest(), id=tile_ids[8]))
 
-        # append Mountains tiles
-        for index in range(3):
-            self.tiles.append(Tile(type=Mountains(), id=tile_ids[index]))
-            tile_ids[1:]
+        self.tiles.append(Tile(type=Pasture(), id=tile_ids[9]))
+        self.tiles.append(Tile(type=Pasture(), id=tile_ids[10]))
+        self.tiles.append(Tile(type=Pasture(), id=tile_ids[11]))
+        self.tiles.append(Tile(type=Pasture(), id=tile_ids[12]))
 
-        # append Pasture tiles
-        for index in range(4):
-            self.tiles.append(Tile(type=Pasture(), id=tile_ids[index]))
-            tile_ids[1:]
+        self.tiles.append(Tile(type=Mountains(), id=tile_ids[13]))
+        self.tiles.append(Tile(type=Mountains(), id=tile_ids[14]))
+        self.tiles.append(Tile(type=Mountains(), id=tile_ids[15]))
+
+        self.tiles.append(Tile(type=Hills(), id=tile_ids[16]))
+        self.tiles.append(Tile(type=Hills(), id=tile_ids[17]))
+        self.tiles.append(Tile(type=Hills(), id=tile_ids[18]))
 
         random.shuffle(self.tiles)
         self.apply_tokens()
@@ -128,38 +124,37 @@ class Board:
         s, s2 = self.tiles[18].display_type(), self.tiles[18].display_token()
 
         board = f"""
-        ==========================================================================
-                                     X---------X
-                                    /           \\
-                                   /             \\
-                        X---------X      {a}      X---------X
-                       /           \\     ({a2})    /           \\
-                      /             \\           /             \\
-           X---------X      {d}      X---------X      {b}      X---------X
-          /           \\     ({d2})    /           \\     ({b2})    /           \\
-         /             \\           /             \\           /             \\
-        X      {h}      X---------X      {e}      X---------X      {c}      X
-         \\     ({h2})    /           \\     ({e2})    /           \\     ({c2})    /
-          \\           /             \\           /             \\           /
-           X---------X      {i}      X---------X      {f}      X---------X
-          /           \\     ({i2})    /           \\     ({f2})    /           \\
-         /             \\           /             \\           /             \\
-        X      {m}      X---------X      {j}      X---------X      {g}      X
-         \\     ({m2})    /           \\     ({j2})    /           \\     ({g2})    /
-          \\           /             \\           /             \\           /
-           X---------X      {n}      X---------X      {k}      X---------X
-          /           \\     ({n2})    /           \\     ({k2})    /           \\
-         /             \\           /             \\           /             \\
-        X      {q}      X---------X      {o}      X---------X      {l}      X
-         \\     ({q2})    /           \\     ({o2})    /           \\     ({l2})    /
-          \\           /             \\           /             \\           /
-           X---------X      {r}      X---------X      {p}      X---------X
-                      \\     ({r2})    /           \\     ({p2})    /
-                       \\           /             \\           /
-                        X---------X      {s}      X---------X
-                                   \\     ({s2})    /
-                                    \\           /
-                                     X---------X
-        ==========================================================================
-        """
+===========================================================================================
+                                       X---------X
+                                      /           \\
+                                     /             \\
+                          X---------X      {a}      X---------X
+                         /           \\     ({a2})    /           \\
+                        /             \\           /             \\
+             X---------X      {d}      X---------X      {b}      X---------X
+            /           \\     ({d2})    /           \\     ({b2})    /           \\
+           /             \\           /             \\           /             \\
+          X      {h}      X---------X      {e}      X---------X      {c}      X
+           \\     ({h2})    /           \\     ({e2})    /           \\     ({c2})    /
+            \\           /             \\           /             \\           /
+             X---------X      {i}      X---------X      {f}      X---------X
+            /           \\     ({i2})    /           \\     ({f2})    /           \\
+           /             \\           /             \\           /             \\
+          X      {m}      X---------X      {j}      X---------X      {g}      X
+           \\     ({m2})    /           \\     ({j2})    /           \\     ({g2})    /
+            \\           /             \\           /             \\           /
+             X---------X      {n}      X---------X      {k}      X---------X
+            /           \\     ({n2})    /           \\     ({k2})    /           \\
+           /             \\           /             \\           /             \\
+          X      {q}      X---------X      {o}      X---------X      {l}      X
+           \\     ({q2})    /           \\     ({o2})    /           \\     ({l2})    /
+            \\           /             \\           /             \\           /
+             X---------X      {r}      X---------X      {p}      X---------X
+                        \\     ({r2})    /           \\     ({p2})    /
+                         \\           /             \\           /
+                          X---------X      {s}      X---------X
+                                     \\     ({s2})    /
+                                      \\           /
+                                       X---------X
+==========================================================================================="""
         print(board)

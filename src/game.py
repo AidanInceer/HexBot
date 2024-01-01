@@ -12,9 +12,9 @@ class Game:
     game_ended: bool = False
 
     def run(self):
+        self.board.display()
+        self.game_setup()
         while not self.game_ended:
-            self.board.display()
-            self.game_setup()
             for player in self.players:
                 self.turn(player)
                 self.check_win()
@@ -38,13 +38,9 @@ class Game:
     def turn(self, player: Player):
         self.turn_ended = False
         self.board.display()
-        print(f"{player.color}'s turn")
         print(
-            f"Score: {player.score}, "
-            f"Cards: {player.cards}, "
-            f"Resources: {player.resources.resources}, "
-            f"Dev Cards: {player.dev_cards}, "
-            f"Buildings: {player.buildings.settlements}, {player.buildings.cities}, {player.buildings.roads} "
+            f"| {player.color}'s turn | Score: {player.score} | {player.cards} | {player.resources}  |\n"
+            "==========================================================================================="
         )
         roll = player.roll()
 
@@ -72,7 +68,7 @@ class Game:
         tile_nodes = tile.nodes
 
         if any(node in active_nodes for node in tile_nodes):
-            player.resources[tile.type.produces] += 1
+            player.resources[tile.type.produces].count += 1
             print(f"{player.color} collected {tile.type.produces}.")
 
     def collect_from_cities(self, player: Player, tile: Tile):
@@ -80,5 +76,5 @@ class Game:
         tile_nodes = tile.nodes
 
         if any(node in active_nodes for node in tile_nodes):
-            player.resources[tile.type.produces] += 2
+            player.resources[tile.type.produces].count += 2
             print(f"{player.color} collected {tile.type.produces}.")

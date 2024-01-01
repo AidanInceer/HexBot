@@ -14,7 +14,6 @@ class Player:
     score: int = 0
     type: str = "Bot"
     buildings: Buildings = field(default_factory=Buildings)
-    dev_cards: list = field(default_factory=list)
     resources: Resources = field(default_factory=Resources)
     cards: Cards = field(default_factory=Cards)
 
@@ -46,38 +45,50 @@ class Player:
 
     def settlement(self, board: Board):
         if (
-            self.resources["brick"] >= 1
-            and self.resources["wood"] >= 1
-            and self.resources["sheep"] >= 1
-            and self.resources["wheat"] >= 1
+            self.resources.brick.count >= 1
+            and self.resources.wood.count >= 1
+            and self.resources.sheep.count >= 1
+            and self.resources.wheat.count >= 1
         ):
-            self.resources["brick"] -= 1
-            self.resources["wood"] -= 1
-            self.resources["sheep"] -= 1
-            self.resources["wheat"] -= 1
+            self.resources.brick.count -= 1
+            self.resources.wood.count -= 1
+            self.resources.sheep.count -= 1
+            self.resources.wheat.count -= 1
             self.score += 1
             node = int(input("Where would you like to build a settlement? [1-54]:"))
-            self.buildings.settlements.append(Settlement(self.color, node))
+            settlement = Settlement(self.color, node)
+            self.buildings.settlements.append(settlement)
+            board.nodes[node].occupied = True
+            board.nodes[node].building = settlement
+            for node in board.nodes[node].nodes:
+                board.nodes[node].occupied = True
 
         else:
             print("Not enough resources, please choose again")
             self.build(board)
 
     def city(self, board: Board):
-        if self.resources["wheat"] >= 2 and self.resources["ore"] >= 3:
-            self.resources["wheat"] -= 2
-            self.resources["ore"] -= 3
+        if self.resources.wheat.count >= 2 and self.resources.ore.count >= 3:
+            self.resources.wheat.count -= 2
+            self.resources.ore.count -= 3
             self.score += 1
             node = int(input("Where would you like to build a city? [1-54]:"))
+            # if board.nodes[node].occupied: return to build -
             self.buildings.cities.append(City(self.color, node))
+            city = City(self.color, node)
+            self.buildings.cities.append(city)
+            board.nodes[node].occupied = True
+            board.nodes[node].building = city
+            for node in board.nodes[node].nodes:
+                board.nodes[node].occupied = True
         else:
             print("Not enough resources, please choose again")
             self.build(board)
 
     def road(self, board: Board):
-        if self.resources["brick"] >= 1 and self.resources["wood"] >= 1:
-            self.resources["brick"] -= 1
-            self.resources["wood"] -= 1
+        if self.resources.brick.count >= 1 and self.resources.wood.count >= 1:
+            self.resources.brick.count -= 1
+            self.resources.wood.count -= 1
 
             edge = int(input("Where would you like to build a road? [1-72]:"))
             self.buildings.roads.append(Road(self.color, edge))

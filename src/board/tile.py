@@ -13,6 +13,9 @@ class Tile:
         self.token: Union[None, int] = None
         self.nodes: List[int] = tile_mapping[self.id]["adjacent_nodes"]
 
+    def __repr__(self) -> str:
+        return f"Tile(name={self.type.name}, id={self.id}, token={self.token}, nodes={self.nodes})"
+
     def near_nodes(self):
         return self.nodes
 
