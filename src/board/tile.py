@@ -21,3 +21,9 @@ class Tile:
 
     def value(self):
         return self.token
+
+    def display_type(self):
+        return self.type.name[:3].upper()
+
+    def display_token(self):
+        return "07" if self.token is None else str(self.token).zfill(2)

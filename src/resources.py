@@ -1,11 +1,11 @@
 class Resources:
     def __init__(self):
         self.resources = {
-            "brick": 0,
+            "brick": 4,
             "ore": 0,
-            "sheep": 0,
-            "wheat": 0,
-            "wood": 0,
+            "sheep": 2,
+            "wheat": 2,
+            "wood": 4,
         }
 
     def __getitem__(self, key):

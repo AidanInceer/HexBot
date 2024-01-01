@@ -13,11 +13,20 @@ class Game:
 
     def run(self):
         while not self.game_ended:
-            # self.board.display()
-            # self.game_setup()
+            self.board.display()
+            self.game_setup()
             for player in self.players:
                 self.turn(player)
                 self.check_win()
+
+    def game_setup(self):
+        for player in self.players:
+            print(f"{player.color}'s turn to setup")
+            player.build(self.board, setup=True)
+
+        for player in self.players[::-1]:
+            print(f"{player.color}'s turn to setup")
+            player.build(self.board, setup=True)
 
     def check_win(self):
         for player in self.players:
@@ -28,8 +37,7 @@ class Game:
 
     def turn(self, player: Player):
         self.turn_ended = False
-        print("=========================")
-        # self.board.display()
+        self.board.display()
         print(f"{player.color}'s turn")
         print(
             f"Score: {player.score}, "

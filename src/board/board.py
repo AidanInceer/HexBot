@@ -92,6 +92,7 @@ class Board:
             self.tiles.append(Tile(type=Pasture(), id=tile_ids[index]))
             tile_ids[1:]
 
+        random.shuffle(self.tiles)
         self.apply_tokens()
         return self.tiles
 
@@ -104,3 +105,61 @@ class Board:
                 tile.token = random.choice(tokens)
                 tokens.remove(tile.token)
         return self.tiles
+
+    def display(self) -> None:
+        a, a2 = self.tiles[0].display_type(), self.tiles[0].display_token()
+        b, b2 = self.tiles[1].display_type(), self.tiles[1].display_token()
+        c, c2 = self.tiles[2].display_type(), self.tiles[2].display_token()
+        d, d2 = self.tiles[3].display_type(), self.tiles[3].display_token()
+        e, e2 = self.tiles[4].display_type(), self.tiles[4].display_token()
+        f, f2 = self.tiles[5].display_type(), self.tiles[5].display_token()
+        g, g2 = self.tiles[6].display_type(), self.tiles[6].display_token()
+        h, h2 = self.tiles[7].display_type(), self.tiles[7].display_token()
+        i, i2 = self.tiles[8].display_type(), self.tiles[8].display_token()
+        j, j2 = self.tiles[9].display_type(), self.tiles[9].display_token()
+        k, k2 = self.tiles[10].display_type(), self.tiles[10].display_token()
+        l, l2 = self.tiles[11].display_type(), self.tiles[11].display_token()
+        m, m2 = self.tiles[12].display_type(), self.tiles[12].display_token()
+        n, n2 = self.tiles[13].display_type(), self.tiles[13].display_token()
+        o, o2 = self.tiles[14].display_type(), self.tiles[14].display_token()
+        p, p2 = self.tiles[15].display_type(), self.tiles[15].display_token()
+        q, q2 = self.tiles[16].display_type(), self.tiles[16].display_token()
+        r, r2 = self.tiles[17].display_type(), self.tiles[17].display_token()
+        s, s2 = self.tiles[18].display_type(), self.tiles[18].display_token()
+
+        board = f"""
+        ==========================================================================
+                                     X---------X
+                                    /           \\
+                                   /             \\
+                        X---------X      {a}      X---------X
+                       /           \\     ({a2})    /           \\
+                      /             \\           /             \\
+           X---------X      {d}      X---------X      {b}      X---------X
+          /           \\     ({d2})    /           \\     ({b2})    /           \\
+         /             \\           /             \\           /             \\
+        X      {h}      X---------X      {e}      X---------X      {c}      X
+         \\     ({h2})    /           \\     ({e2})    /           \\     ({c2})    /
+          \\           /             \\           /             \\           /
+           X---------X      {i}      X---------X      {f}      X---------X
+          /           \\     ({i2})    /           \\     ({f2})    /           \\
+         /             \\           /             \\           /             \\
+        X      {m}      X---------X      {j}      X---------X      {g}      X
+         \\     ({m2})    /           \\     ({j2})    /           \\     ({g2})    /
+          \\           /             \\           /             \\           /
+           X---------X      {n}      X---------X      {k}      X---------X
+          /           \\     ({n2})    /           \\     ({k2})    /           \\
+         /             \\           /             \\           /             \\
+        X      {q}      X---------X      {o}      X---------X      {l}      X
+         \\     ({q2})    /           \\     ({o2})    /           \\     ({l2})    /
+          \\           /             \\           /             \\           /
+           X---------X      {r}      X---------X      {p}      X---------X
+                      \\     ({r2})    /           \\     ({p2})    /
+                       \\           /             \\           /
+                        X---------X      {s}      X---------X
+                                   \\     ({s2})    /
+                                    \\           /
+                                     X---------X
+        ==========================================================================
+        """
+        print(board)

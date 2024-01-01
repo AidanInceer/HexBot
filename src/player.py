@@ -25,18 +25,24 @@ class Player:
             print("Robber!")
         return roll
 
-    def build(self, board: Board):
+    def build(self, board: Board, setup=False):
         self.end_building = False
         while not self.end_building:
-            choice = input("1=Settlement, 2=City, 3=Road, 4=End: ")
-            if choice == "1":
+            if setup:
                 self.settlement(board)
-            elif choice == "2":
-                self.city(board)
-            elif choice == "3":
                 self.road(board)
-            elif choice == "4":
                 self.end_building = True
+
+            if not setup:
+                choice = input("1=Settlement, 2=City, 3=Road, 4=End: ")
+                if choice == "1":
+                    self.settlement(board)
+                elif choice == "2":
+                    self.city(board)
+                elif choice == "3":
+                    self.road(board)
+                elif choice == "4":
+                    self.end_building = True
 
     def settlement(self, board: Board):
         if (
@@ -50,7 +56,7 @@ class Player:
             self.resources["sheep"] -= 1
             self.resources["wheat"] -= 1
             self.score += 1
-            node = int(input("Where would you like to build? [1-54]:"))
+            node = int(input("Where would you like to build a settlement? [1-54]:"))
             self.buildings.settlements.append(Settlement(self.color, node))
 
         else:
@@ -62,7 +68,7 @@ class Player:
             self.resources["wheat"] -= 2
             self.resources["ore"] -= 3
             self.score += 1
-            node = int(input("Where would you like to build? [1-54]:"))
+            node = int(input("Where would you like to build a city? [1-54]:"))
             self.buildings.cities.append(City(self.color, node))
         else:
             print("Not enough resources, please choose again")
@@ -73,7 +79,7 @@ class Player:
             self.resources["brick"] -= 1
             self.resources["wood"] -= 1
 
-            edge = int(input("Where would you like to build? [1-72]:"))
+            edge = int(input("Where would you like to build a road? [1-72]:"))
             self.buildings.roads.append(Road(self.color, edge))
         else:
             print("Not enough resources, please choose again")
