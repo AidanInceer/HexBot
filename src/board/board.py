@@ -64,26 +64,21 @@ class Board:
         self.tiles = []
 
         self.tiles.append(Tile(type=Desert(), id=tile_ids[0]))
-
         self.tiles.append(Tile(type=Fields(), id=tile_ids[1]))
         self.tiles.append(Tile(type=Fields(), id=tile_ids[2]))
         self.tiles.append(Tile(type=Fields(), id=tile_ids[3]))
         self.tiles.append(Tile(type=Fields(), id=tile_ids[4]))
-
         self.tiles.append(Tile(type=Forest(), id=tile_ids[5]))
         self.tiles.append(Tile(type=Forest(), id=tile_ids[6]))
         self.tiles.append(Tile(type=Forest(), id=tile_ids[7]))
         self.tiles.append(Tile(type=Forest(), id=tile_ids[8]))
-
         self.tiles.append(Tile(type=Pasture(), id=tile_ids[9]))
         self.tiles.append(Tile(type=Pasture(), id=tile_ids[10]))
         self.tiles.append(Tile(type=Pasture(), id=tile_ids[11]))
         self.tiles.append(Tile(type=Pasture(), id=tile_ids[12]))
-
         self.tiles.append(Tile(type=Mountains(), id=tile_ids[13]))
         self.tiles.append(Tile(type=Mountains(), id=tile_ids[14]))
         self.tiles.append(Tile(type=Mountains(), id=tile_ids[15]))
-
         self.tiles.append(Tile(type=Hills(), id=tile_ids[16]))
         self.tiles.append(Tile(type=Hills(), id=tile_ids[17]))
         self.tiles.append(Tile(type=Hills(), id=tile_ids[18]))
