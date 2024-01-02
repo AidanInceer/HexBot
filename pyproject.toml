@@ -42,7 +42,7 @@ version_scheme = "semver"
 version_provider = "poetry"
 update_changelog_on_bump = true
 changelog_incremental = true
-major_version_zero = true
+major_version_zero = false
 
 
 [tool.mypy]
