@@ -1,3 +1,9 @@
+## 0.6.0 (2024-01-02)
+
+### Feat
+
+- **MAJOR**: update project configuration to release major version
+
 ## 0.5.1 (2024-01-02)
 
 ### Fix
