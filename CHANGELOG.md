@@ -1,3 +1,13 @@
+## 1.0.0 (2024-01-02)
+
+### BREAKING CHANGE
+
+- update release to 1.0.0
+
+### Feat
+
+- **README**: add a new line
+
 ## 0.6.0 (2024-01-02)
 
 ### Feat
