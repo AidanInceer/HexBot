@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import List, Union
 
 from src.board.mapping import node_mapping
+from src.build.buildings import City, Settlement
 
 
 @dataclass
@@ -13,7 +14,8 @@ class Node:
         self.harbors: List[int] = node_mapping[self.id]["adjacent_harbor"]
         self.tiles: List[int] = node_mapping[self.id]["adjacent_tiles"]
         self.occupied: bool = False
-        self.building: Union[None, str] = None
+        self.building: Union[None, Settlement, City] = None
+        self.color: Union[None, str] = None
 
     def near_nodes(self):
         return self.nodes
