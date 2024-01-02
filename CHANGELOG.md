@@ -1,3 +1,17 @@
+## 0.5.0 (2024-01-02)
+
+### Feat
+
+- **BREAKING CHANGE**: add basic trading
+- add game setup, update resources class, fix reprs, fix board tile creation
+- add game setup and display of Board
+- add basic building functionality, remove unused files
+- add skeleton of the game, created the baseline for the catan board
+
+### Fix
+
+- building adjaceny, add edge to edge mapping
+
 ## 0.4.2 (2023-12-29)
 
 ### Fix
