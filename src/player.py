@@ -146,5 +146,44 @@ class Player:
             print("Not enough resources to build a road, please choose again")
             self.build_road(board)
 
-    def trade(self):
-        print("Trade")
+    def trade(self, board: Board):
+        base_rates = {
+            "brick": 4,
+            "wood": 4,
+            "sheep": 4,
+            "wheat": 4,
+            "ore": 4,
+        }
+
+        # Get players nodes with buildings.
+        players_buildings = self.buildings.settlements + self.buildings.cities
+        player_building_ids = [building.id for building in players_buildings]
+        player_nodes = []
+        for id in player_building_ids:
+            node = board.nodes[id - 1]
+            player_nodes.append(node)
+
+        harbor_rates = {}
+        for node in player_nodes:
+            if len(node.harbors) > 0:
+                for harbor_id in node.harbors:
+                    harbor = board.harbors[harbor_id - 1]
+                    harbor_rates[harbor.resource] = harbor.rate
+
+        rates = {**base_rates, **harbor_rates}
+        # Trade with bank
+        # select a resource to trade
+        trade_type = int(input("Player Trade (1), Bank/Port Trade (2), Cancel (3): "))
+        if trade_type == 2:
+            resource = input("Which resource would you like to trade: ")
+            receive = input("Which resource would you like to receive: ")
+
+            if self.resources[resource].count >= rates[resource]:
+                self.resources[resource].count -= rates[resource]
+                self.resources[receive].count += 1
+            else:
+                print("Not enough resources to trade, please choose again")
+                self.trade(board)
+
+        elif trade_type == 3:
+            pass

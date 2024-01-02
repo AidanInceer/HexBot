@@ -51,7 +51,7 @@ class Game:
             if choice == "1":
                 player.build(self.board)
             elif choice == "2":
-                player.trade()
+                player.trade(self.board)
             elif choice == "3":
                 self.turn_ended = True
 
