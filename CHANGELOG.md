@@ -1,3 +1,9 @@
+## 0.5.1 (2024-01-02)
+
+### Fix
+
+- **BREAKING CHANGE**: correct versioning
+
 ## 0.5.0 (2024-01-02)
 
 ### Feat
