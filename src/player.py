@@ -52,11 +52,11 @@ class Player:
             and self.resources.sheep.count >= 1
             and self.resources.wheat.count >= 1
         ):
-            node_id = int(input("Choose settlement location - [1-54]:")) - 1
+            node_id = int(input("Choose settlement location - [0-53]:"))
 
             # only build settlement if the node is not occupied and nearby nodes are not occupied.
             nearby_node_ids = board.nodes[node_id].nodes
-            nearby_nodes = [board.nodes[node - 1].occupied for node in nearby_node_ids]
+            nearby_nodes = [board.nodes[node].occupied for node in nearby_node_ids]
             if board.nodes[node_id].occupied is False and all(nearby_nodes) is False:
                 # update the board to show the settlement, set nearby nodes to occupied
                 settlement = Settlement(self.color, node_id)
@@ -70,7 +70,7 @@ class Player:
                 board.nodes[node_id].building = settlement
                 board.nodes[node_id].color = self.color
                 for node in board.nodes[node_id].nodes:
-                    board.nodes[node - 1].occupied = True
+                    board.nodes[node].occupied = True
             else:
                 print("Invalid location, select a build option again.")
                 self.build_settlement(board)
@@ -83,7 +83,7 @@ class Player:
         # Only build city if you have 2 wheat and 3 ore.
         if self.resources.wheat.count >= 2 and self.resources.ore.count >= 3:
             # Get the node id of the city.
-            node_id = int(input("Choose city location - [1-54]:")) - 1
+            node_id = int(input("Choose city location - [0-53]:"))
 
             # Check if there is a settlement at the node.
             if (
@@ -103,7 +103,7 @@ class Player:
                 board.nodes[node_id].occupied = True
                 board.nodes[node_id].color = self.color
                 for node in board.nodes[node_id].nodes:
-                    board.nodes[node - 1].occupied = True
+                    board.nodes[node].occupied = True
             else:
                 print("Invalid location, select a build option again.")
                 self.build_city(board)
@@ -120,15 +120,11 @@ class Player:
 
     def build_road(self, board: Board):
         if self.resources.brick.count >= 1 and self.resources.wood.count >= 1:
-            edge_id = int(input("Choose road location - [1-72]:")) - 1
+            edge_id = int(input("Choose road location - [0-71]:"))
             nearby_edge_ids = board.edges[edge_id].edges
             nearby_node_ids = board.edges[edge_id].nodes
-            nearby_edge_colors = [
-                board.edges[edge - 1].color for edge in nearby_edge_ids
-            ]
-            nearby_nodes_colors = [
-                board.nodes[node - 1].color for node in nearby_node_ids
-            ]
+            nearby_edge_colors = [board.edges[edge].color for edge in nearby_edge_ids]
+            nearby_nodes_colors = [board.nodes[node].color for node in nearby_node_ids]
             if board.edges[edge_id].occupied is False and self.color in (
                 nearby_edge_colors + nearby_nodes_colors
             ):
@@ -160,14 +156,24 @@ class Player:
         player_building_ids = [building.id for building in players_buildings]
         player_nodes = []
         for id in player_building_ids:
-            node = board.nodes[id - 1]
+            node = board.nodes[id]
             player_nodes.append(node)
 
         harbor_rates = {}
         for node in player_nodes:
             if len(node.harbors) > 0:
                 for harbor_id in node.harbors:
-                    harbor = board.harbors[harbor_id - 1]
+                    harbor = board.harbors[harbor_id]
+                    if harbor.resource == "all":
+                        harbor_rates = {
+                            "brick": 3,
+                            "wood": 3,
+                            "sheep": 3,
+                            "wheat": 3,
+                            "ore": 3,
+                        }
+                for harbor_id in node.harbors:
+                    harbor = board.harbors[harbor_id]
                     harbor_rates[harbor.resource] = harbor.rate
 
         rates = {**base_rates, **harbor_rates}
@@ -181,6 +187,8 @@ class Player:
             if self.resources[resource].count >= rates[resource]:
                 self.resources[resource].count -= rates[resource]
                 self.resources[receive].count += 1
+
+                print(f"Traded {rates[resource]} {resource} for 1 {receive}")
             else:
                 print("Not enough resources to trade, please choose again")
                 self.trade(board)

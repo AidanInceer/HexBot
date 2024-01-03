@@ -17,13 +17,13 @@ class Board:
     tiles: Optional[List[Tile]] = None
 
     def get_node(self, node_id: int) -> Node:
-        return self.nodes[node_id - 1]
+        return self.nodes[node_id]
 
     def get_edge(self, edge_id: int) -> Edge:
-        return self.edges[edge_id - 1]
+        return self.edges[edge_id]
 
     def get_harbor(self, harbor_id: int) -> Harbor:
-        return self.harbors[harbor_id - 1]
+        return self.harbors[harbor_id]
 
     def active_tiles(self, roll: int) -> List[Tile]:
         return [tile for tile in self.tiles if tile.token == roll]
@@ -37,29 +37,29 @@ class Board:
         self.tiles = self.generate_tiles()
 
     def generate_nodes(self):
-        self.nodes = [Node(id=node_id + 1) for node_id in range(54)]
+        self.nodes = [Node(id=node_id) for node_id in range(54)]
         return self.nodes
 
     def generate_edges(self):
-        self.edges = [Edge(id=edge_id + 1) for edge_id in range(72)]
+        self.edges = [Edge(id=edge_id) for edge_id in range(72)]
         return self.edges
 
     def generate_harbors(self):
         self.harbors = [
-            Harbor(id=1, resource="all", rate=3),
-            Harbor(id=2, resource="wheat", rate=2),
-            Harbor(id=3, resource="ore", rate=2),
-            Harbor(id=4, resource="wood", rate=2),
-            Harbor(id=5, resource="all", rate=3),
-            Harbor(id=6, resource="brick", rate=2),
-            Harbor(id=7, resource="sheep", rate=2),
+            Harbor(id=0, resource="all", rate=3),
+            Harbor(id=1, resource="wheat", rate=2),
+            Harbor(id=2, resource="ore", rate=2),
+            Harbor(id=3, resource="wood", rate=2),
+            Harbor(id=4, resource="all", rate=3),
+            Harbor(id=5, resource="brick", rate=2),
+            Harbor(id=6, resource="sheep", rate=2),
+            Harbor(id=7, resource="all", rate=3),
             Harbor(id=8, resource="all", rate=3),
-            Harbor(id=9, resource="all", rate=3),
         ]
         return self.harbors
 
     def generate_tiles(self) -> List[Tile]:
-        tile_ids = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+        tile_ids = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
         random.shuffle(tile_ids)
 
         self.tiles = []
