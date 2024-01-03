@@ -1,10 +1,10 @@
 import random
 from dataclasses import dataclass, field
-from typing import Union
+from typing import List, Union
 
 from src.board.board import Board
 from src.build.buildings import Buildings, City, Road, Settlement
-from src.cards import Cards
+from src.cards import Knight, Monopoly, RoadBuilding, VictoryPoint, YearOfPlenty
 from src.resources import Resources
 
 
@@ -16,7 +16,9 @@ class Player:
     type: Union[None, str] = None
     buildings: Buildings = field(default_factory=Buildings)
     resources: Resources = field(default_factory=Resources)
-    cards: Cards = field(default_factory=Cards)
+    cards: List[
+        Union[Knight, VictoryPoint, Monopoly, RoadBuilding, YearOfPlenty]
+    ] = field(default_factory=list)
 
     def roll(self):
         roll = random.randint(1, 6) + random.randint(1, 6)
@@ -143,6 +145,27 @@ class Player:
             self.build_road(board)
 
     def trade(self, board: Board):
+        rates = self.determine_trade_rates(board)
+        # Trade with bank
+        # select a resource to trade
+        trade_type = int(input("Player Trade (1), Bank/Port Trade (2), Cancel (3): "))
+        if trade_type == 2:
+            resource = input("Which resource would you like to trade: ")
+            receive = input("Which resource would you like to receive: ")
+
+            if self.resources[resource].count >= rates[resource]:
+                self.resources[resource].count -= rates[resource]
+                self.resources[receive].count += 1
+
+                print(f"Traded {rates[resource]} {resource} for 1 {receive}")
+            else:
+                print("Not enough resources to trade, please choose again")
+                self.trade(board)
+
+        elif trade_type == 3:
+            pass
+
+    def determine_trade_rates(self, board: Board):
         base_rates = {
             "brick": 4,
             "wood": 4,
@@ -176,22 +199,56 @@ class Player:
                     harbor = board.harbors[harbor_id]
                     harbor_rates[harbor.resource] = harbor.rate
 
-        rates = {**base_rates, **harbor_rates}
-        # Trade with bank
-        # select a resource to trade
-        trade_type = int(input("Player Trade (1), Bank/Port Trade (2), Cancel (3): "))
-        if trade_type == 2:
-            resource = input("Which resource would you like to trade: ")
-            receive = input("Which resource would you like to receive: ")
+        return {**base_rates, **harbor_rates}
 
-            if self.resources[resource].count >= rates[resource]:
-                self.resources[resource].count -= rates[resource]
-                self.resources[receive].count += 1
+    def dev_card(self, board: Board):
+        self._dev_card = False
+        while not self._dev_card:
+            choice = input("1=Collect, 2=Play, 3=End:")
+            if choice == "1":
+                self.collect_dev_card(board)
+            elif choice == "2":
+                self.select_dev_card_to_play()
+            elif choice == "3":
+                self._dev_card = True
 
-                print(f"Traded {rates[resource]} {resource} for 1 {receive}")
+    def collect_dev_card(self, board: Board):
+        if (
+            self.resources.sheep.count >= 1
+            and self.resources.wheat.count >= 1
+            and self.resources.ore.count >= 1
+        ):
+            self.resources.sheep.count -= 1
+            self.resources.wheat.count -= 1
+            self.resources.ore.count -= 1
+            selected = board.select_dev_card()
+            if selected is not None:
+                self.cards.append(selected)
+                self._dev_card = False
+                print(f"Collected Development Card: {selected.__class__.__name__}")
             else:
-                print("Not enough resources to trade, please choose again")
-                self.trade(board)
+                print("No more dev cards left")
 
-        elif trade_type == 3:
-            pass
+    def select_dev_card_to_play(self):
+        if len(self.cards) > 0:
+            chosen = input("Which dev card would you like to play: ")
+            card_types = [
+                ("knight", Knight),
+                ("victory_point", VictoryPoint),
+                ("monopoly", Monopoly),
+                ("road_building", RoadBuilding),
+                ("year_of_plenty", YearOfPlenty),
+            ]
+            for card_type in card_types:
+                if chosen == card_type[0]:
+                    for card in self.cards:
+                        if isinstance(card, card_type[1]):
+                            self.play_dev_card(card)
+
+    def play_dev_card(
+        self,
+        card: Union[Knight, VictoryPoint, Monopoly, RoadBuilding, YearOfPlenty],
+    ):
+        card.play()
+        self.cards.remove(card)
+        self.dev_card = True

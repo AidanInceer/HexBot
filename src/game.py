@@ -47,12 +47,14 @@ class Game:
         self.collect(roll)
 
         while not self.turn_ended:
-            choice = input("1=Build, 2=Trade, 3=End: ")
+            choice = input("1=Build, 2=Trade, 3=Dev Cards(Play/Select), 4=End: ")
             if choice == "1":
                 player.build(self.board)
             elif choice == "2":
                 player.trade(self.board)
             elif choice == "3":
+                player.dev_card(self.board)
+            elif choice == "4":
                 self.turn_ended = True
 
     def collect(self, roll: int):

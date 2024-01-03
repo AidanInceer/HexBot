@@ -1,29 +1,87 @@
 from dataclasses import dataclass
+from typing import Union
 
 
 @dataclass
-class Cards:
-    knight: int = 0
-    victory_point: int = 0
-    monopoly: int = 0
-    road_building: int = 0
-    year_of_plenty: int = 0
+class Knight:
+    color: Union[str, None] = None
+    played: bool = False
+    player: Union[str, None] = None
 
-    def __repr__(self) -> str:
-        cards = []
-        types = [
-            "knight",
-            "victory_point",
-            "monopoly",
-            "road_building",
-            "year_of_plenty",
-        ]
-        for card in types:
-            if getattr(self, card) > 0:
-                cards.append(f"{card}: {getattr(self, card)}")
-        if len(cards) == 0:
-            cards = "None"
-        else:
-            cards = ", ".join(cards)
+    def play(self):
+        self.played = True
+        print("Played Knight")
 
-        return f"Cards: {cards}"
+    def __getitem__(self, key):
+        return self.__dict__.get(key)
+
+    def __setitem__(self, key, value):
+        self[key] = value
+
+
+@dataclass
+class VictoryPoint:
+    color: Union[str, None] = None
+    played: bool = False
+    player: Union[str, None] = None
+
+    def play(self):
+        self.played = True
+        print("Played Victory Point")
+
+    def __getitem__(self, key):
+        return self.__dict__.get(key)
+
+    def __setitem__(self, key, value):
+        self[key] = value
+
+
+@dataclass
+class Monopoly:
+    color: Union[str, None] = None
+    played: bool = False
+    player: Union[str, None] = None
+
+    def play(self):
+        self.played = True
+        print("Played Monopoly")
+
+    def __getitem__(self, key):
+        return self.__dict__.get(key)
+
+    def __setitem__(self, key, value):
+        self[key] = value
+
+
+@dataclass
+class RoadBuilding:
+    color: Union[str, None] = None
+    played: bool = False
+    player: Union[str, None] = None
+
+    def play(self):
+        self.played = True
+        print("Played Road Building")
+
+    def __getitem__(self, key):
+        return self.__dict__.get(key)
+
+    def __setitem__(self, key, value):
+        self[key] = value
+
+
+@dataclass
+class YearOfPlenty:
+    color: Union[str, None] = None
+    played: bool = False
+    player: Union[str, None] = None
+
+    def play(self):
+        self.played = True
+        print("Played Year of Plenty")
+
+    def __getitem__(self, key):
+        return self.__dict__.get(key)
+
+    def __setitem__(self, key, value):
+        self[key] = value

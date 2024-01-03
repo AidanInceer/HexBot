@@ -2,6 +2,8 @@ import random
 from dataclasses import dataclass
 from typing import List, Optional
 
+from src.cards import Knight, Monopoly, RoadBuilding, VictoryPoint, YearOfPlenty
+
 from .edge import Edge
 from .harbor import Harbor
 from .node import Node
@@ -35,6 +37,7 @@ class Board:
         self.edges = self.generate_edges()
         self.harbors = self.generate_harbors()
         self.tiles = self.generate_tiles()
+        self.generate_dev_cards()
 
     def generate_nodes(self):
         self.nodes = [Node(id=node_id) for node_id in range(54)]
@@ -97,6 +100,46 @@ class Board:
                 tile.token = random.choice(tokens)
                 tokens.remove(tile.token)
         return self.tiles
+
+    def generate_dev_cards(self):
+        self.dev_cards = []
+
+        self.dev_cards.append(Knight())
+        self.dev_cards.append(Knight())
+        self.dev_cards.append(Knight())
+        self.dev_cards.append(Knight())
+        self.dev_cards.append(Knight())
+        self.dev_cards.append(Knight())
+        self.dev_cards.append(Knight())
+        self.dev_cards.append(Knight())
+        self.dev_cards.append(Knight())
+        self.dev_cards.append(Knight())
+        self.dev_cards.append(Knight())
+        self.dev_cards.append(Knight())
+        self.dev_cards.append(Knight())
+        self.dev_cards.append(Knight())
+        self.dev_cards.append(RoadBuilding())
+        self.dev_cards.append(RoadBuilding())
+        self.dev_cards.append(VictoryPoint())
+        self.dev_cards.append(VictoryPoint())
+        self.dev_cards.append(VictoryPoint())
+        self.dev_cards.append(VictoryPoint())
+        self.dev_cards.append(VictoryPoint())
+        self.dev_cards.append(YearOfPlenty())
+        self.dev_cards.append(YearOfPlenty())
+        self.dev_cards.append(Monopoly())
+        self.dev_cards.append(Monopoly())
+
+        random.shuffle(self.dev_cards)
+        self.apply_tokens()
+        return self.dev_cards
+
+    def select_dev_card(self):
+        if len(self.dev_cards) == 0:
+            return None
+        selected = self.dev_cards[0]
+        self.dev_cards.pop(0)
+        return selected
 
     def display(self) -> None:
         a, a2 = self.tiles[0].display_type(), self.tiles[0].display_token()
