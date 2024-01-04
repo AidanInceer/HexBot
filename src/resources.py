@@ -5,6 +5,7 @@ from typing import Any, Union
 @dataclass
 class Brick:
     count: int = 0
+    type: str = "brick"
 
     def __repr__(self) -> int:
         return self.count
@@ -16,6 +17,7 @@ class Brick:
 @dataclass
 class Ore:
     count: int = 0
+    type: str = "ore"
 
     def __repr__(self) -> int:
         return self.count
@@ -27,6 +29,7 @@ class Ore:
 @dataclass
 class Sheep:
     count: int = 0
+    type: str = "sheep"
 
     def __repr__(self) -> int:
         return self.count
@@ -38,6 +41,7 @@ class Sheep:
 @dataclass
 class Wheat:
     count: int = 0
+    type: str = "wheat"
 
     def __repr__(self) -> int:
         return self.count
@@ -49,6 +53,7 @@ class Wheat:
 @dataclass
 class Wood:
     count: int = 0
+    type: str = "wood"
 
     def __repr__(self) -> int:
         return self.count
@@ -90,3 +95,12 @@ class Resources:
 
     def __setitem__(self, key, value):
         self[key] = value
+
+    def all_resources(self):
+        return [
+            self.brick.type,
+            self.ore.type,
+            self.sheep.type,
+            self.wheat.type,
+            self.wood.type,
+        ]

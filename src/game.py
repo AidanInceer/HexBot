@@ -129,20 +129,22 @@ class Game:
                 for player in self.players
                 if player.color in select_player and player.total_resources() > 0
             ]
+            if len(robbed_player) == 0:
+                print("No players to steal from.")
+            else:
+                robbed_player = robbed_player[0]
+                available_resources = [
+                    str(res.__class__.__name__).lower()
+                    for key, res in robbed_player.resources.__dict__.items()
+                    if res.count > 0
+                ]
+                random_resource = random.choice(list(available_resources))
 
-            robbed_player = robbed_player[0]
-            available_resources = [
-                str(res.__class__.__name__).lower()
-                for key, res in robbed_player.resources.__dict__.items()
-                if res.count > 0
-            ]
-            random_resource = random.choice(list(available_resources))
-
-            robbed_player.resources[random_resource].count -= 1
-            current_player.resources[random_resource].count += 1
-            print(
-                f"{current_player.color} stole {random_resource} from {robbed_player.color}."
-            )
+                robbed_player.resources[random_resource].count -= 1
+                current_player.resources[random_resource].count += 1
+                print(
+                    f"{current_player.color} stole {random_resource} from {robbed_player.color}."
+                )
 
         # if any player has more than 7 cards, they must discard half
         for player in self.players:

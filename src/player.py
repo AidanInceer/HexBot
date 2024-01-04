@@ -269,7 +269,7 @@ class Player:
             discard = input(
                 "Which resource would you like to discard: brick, wood, sheep, wheat, ore: "
             )
-            if discard not in self.resources:
+            if discard not in self.resources.all_resources():
                 print("Invalid resource, please choose again.")
             elif self.resources[discard].count > 0:
                 self.resources[discard].count -= 1
