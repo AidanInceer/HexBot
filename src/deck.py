@@ -8,33 +8,33 @@ class CardDeck:
         self.dev_cards = self.generate_dev_cards()
 
     def generate_dev_cards(self):
-        self.dev_cards = []
-
-        self.dev_cards.append(Knight())
-        self.dev_cards.append(Knight())
-        self.dev_cards.append(Knight())
-        self.dev_cards.append(Knight())
-        self.dev_cards.append(Knight())
-        self.dev_cards.append(Knight())
-        self.dev_cards.append(Knight())
-        self.dev_cards.append(Knight())
-        self.dev_cards.append(Knight())
-        self.dev_cards.append(Knight())
-        self.dev_cards.append(Knight())
-        self.dev_cards.append(Knight())
-        self.dev_cards.append(Knight())
-        self.dev_cards.append(Knight())
-        self.dev_cards.append(RoadBuilding())
-        self.dev_cards.append(RoadBuilding())
-        self.dev_cards.append(VictoryPoint())
-        self.dev_cards.append(VictoryPoint())
-        self.dev_cards.append(VictoryPoint())
-        self.dev_cards.append(VictoryPoint())
-        self.dev_cards.append(VictoryPoint())
-        self.dev_cards.append(YearOfPlenty())
-        self.dev_cards.append(YearOfPlenty())
-        self.dev_cards.append(Monopoly())
-        self.dev_cards.append(Monopoly())
+        self.dev_cards = [
+            Knight(),
+            Knight(),
+            Knight(),
+            Knight(),
+            Knight(),
+            Knight(),
+            Knight(),
+            Knight(),
+            Knight(),
+            Knight(),
+            Knight(),
+            Knight(),
+            Knight(),
+            Knight(),
+            RoadBuilding(),
+            RoadBuilding(),
+            VictoryPoint(),
+            VictoryPoint(),
+            VictoryPoint(),
+            VictoryPoint(),
+            VictoryPoint(),
+            YearOfPlenty(),
+            YearOfPlenty(),
+            Monopoly(),
+            Monopoly(),
+        ]
 
         random.shuffle(self.dev_cards)
         return self.dev_cards
