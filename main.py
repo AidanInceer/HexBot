@@ -1,10 +1,12 @@
 from src.board.board import Board
+from src.deck import CardDeck
 from src.game import Game
 from src.player import Player
 
 if __name__ == "__main__":
     board = Board()
     board.generate()
+    deck = CardDeck()
     game = Game(
         players=[
             Player(
@@ -24,6 +26,7 @@ if __name__ == "__main__":
                 color="White",
             ),
         ],
+        deck=deck,
         board=board,
     )
     game.run()

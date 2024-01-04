@@ -23,8 +23,6 @@ class Player:
     def roll(self):
         roll = random.randint(1, 6) + random.randint(1, 6)
         print(f"Roll: {roll}")
-        if roll == 7:
-            print("Robber!")
         return roll
 
     def build(self, board: Board, setup=False):
@@ -208,7 +206,7 @@ class Player:
             if choice == "1":
                 self.collect_dev_card(board)
             elif choice == "2":
-                self.select_dev_card_to_play()
+                self.select_dev_card_to_play(board)
             elif choice == "3":
                 self._dev_card = True
 
@@ -229,7 +227,7 @@ class Player:
             else:
                 print("No more dev cards left")
 
-    def select_dev_card_to_play(self):
+    def select_dev_card_to_play(self, board: Board):
         if len(self.cards) > 0:
             chosen = input("Which dev card would you like to play: ")
             card_types = [
@@ -243,12 +241,38 @@ class Player:
                 if chosen == card_type[0]:
                     for card in self.cards:
                         if isinstance(card, card_type[1]):
-                            self.play_dev_card(card)
+                            self.play_dev_card(card, board)
 
     def play_dev_card(
         self,
         card: Union[Knight, VictoryPoint, Monopoly, RoadBuilding, YearOfPlenty],
+        board: Board,
     ):
-        card.play()
+        card.play(board)
         self.cards.remove(card)
         self.dev_card = True
+
+    def total_resources(self) -> int:
+        total = 0
+        for resource in self.resources.__dict__:
+            total += self.resources[resource].count
+        return total
+
+    def discard_resources(self, total: int):
+        discard_amount = total // 2
+        print(
+            f"Player {self.color} has too many resources, must discard {discard_amount}"
+        )
+
+        while discard_amount > 0:
+            print(f"Player {self.color} has {self.resources}")
+            discard = input(
+                "Which resource would you like to discard: brick, wood, sheep, wheat, ore: "
+            )
+            if discard not in self.resources:
+                print("Invalid resource, please choose again.")
+            elif self.resources[discard].count > 0:
+                self.resources[discard].count -= 1
+                discard_amount -= 1
+            else:
+                print("You do not have any of that resource, please choose again.")
