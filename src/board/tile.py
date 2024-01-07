@@ -89,22 +89,22 @@ class Tile:
 
     def display_pips(self):
         mapping = {
-            2: 1,
-            3: 2,
-            4: 3,
-            5: 3,
-            6: 4,
-            7: 0,
-            8: 4,
-            9: 3,
-            10: 3,
-            11: 2,
-            12: 1,
+            2: ".    ",
+            3: "..   ",
+            4: "...  ",
+            5: ".... ",
+            6: ".....",
+            7: "     ",
+            8: ".....",
+            9: ".... ",
+            10: "...  ",
+            11: "..   ",
+            12: ".    ",
         }
         if self.token is None:
-            pip = "  "
+            pip = "     "
         else:
-            pip = str(mapping[self.token]).zfill(2)
+            pip = str(mapping[self.token])
 
         if isinstance(self.type, Desert):
             output = f"{DESERT_COLOR + pip + Fore.RESET}"

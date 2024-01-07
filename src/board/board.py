@@ -2,8 +2,6 @@ import random
 from dataclasses import dataclass
 from typing import List, Optional
 
-from colorama import Fore
-
 from .edge import Edge
 from .harbor import Harbor
 from .node import Node
@@ -241,8 +239,6 @@ class Board:
         e70 = self.edges[70].display_edge()
         e71 = self.edges[71].display_edge()
 
-        t00 = "02"
-
         i00 = self.tiles[0].display_token()
         i01 = self.tiles[1].display_token()
         i02 = self.tiles[2].display_token()
@@ -303,47 +299,60 @@ class Board:
         p17 = self.tiles[17].display_pips()
         p18 = self.tiles[18].display_pips()
 
+        h00 = self.harbors[0].display_harbor()
+        h01 = self.harbors[1].display_harbor()
+        h02 = self.harbors[2].display_harbor()
+        h03 = self.harbors[3].display_harbor()
+        h04 = self.harbors[4].display_harbor()
+        h05 = self.harbors[5].display_harbor()
+        h06 = self.harbors[6].display_harbor()
+        h07 = self.harbors[7].display_harbor()
+        h08 = self.harbors[8].display_harbor()
+
         board = f"""
 ===========================================================================================
+
+                                                     {h00}
+                                                         ||
                                                    {n00}--{e00}--{n01}
                                                   /              \\
                                                  {e06}               {e01}
                                                 /        {i00}        \\
                                    {n07}--{e10}--{n08}       {t00}       {n02}--{e02}--{n03}
-                                  /              \\       {p00}       /              \\
-                                 {e18}               {e11}             {e07}               {e03}
+                                  /              \\      {p00}     /              \\
+                  {h03}- - -{e18}               {e11}             {e07}               {e03}- - -{h01}
                                 /        {i03}        \\            /        {i01}        \\
                    {n16}--{e23}--{n17}       {t03}       {n09}--{e12}--{n10}       {t01}       {n04}--{e04}--{n05}
-                  /              \\       {p03}       /              \\       {p01}       /              \\
+                  /              \\      {p03}     /              \\      {p01}     /              \\
                  {e33}               {e24}             {e19}               {e13}             {e08}               {e05}
                 /        {i07}        \\            /        {i04}        \\            /        {i02}        \\
              {n27}       {t07}       {n18}--{e25}--{n19}       {t04}       {n11}--{e14}--{n12}       {t02}       {n06}
-                 \\       {p07}       /              \\       {p04}       /              \\       {p02}       /
+                 \\      {p07}     /              \\      {p04}     /              \\      {p02}     /
                   {e39}             {e34}               {e26}             {e20}               {e15}             {e09}
                    \\            /        {i08}        \\            /        {i05}        \\            /
                    {n28}--{e40}--{n29}       {t08}       {n20}--{e27}--{n21}       {t05}       {n13}--{e16}--{n14}
-                  /              \\       {p08}       /              \\       {p05}       /              \\
-                 {e49}               {e41}             {e35}               {e28}             {e21}               {e17}
+                  /              \\      {p08}     /              \\      {p05}     /              \\
+ {h05}- - -{e49}               {e41}             {e35}               {e28}             {e21}               {e17}- - -{h02}
                 /        {i12}        \\            /        {i09}        \\            /        {i06}        \\
              {n38}       {t12}       {n30}--{e42}--{n31}       {t09}       {n22}--{e29}--{n23}       {t06}       {n15}
-                 \\       {p12}       /              \\       {p09}       /              \\       {p06}       /
+                 \\      {p12}     /              \\      {p09}     /              \\      {p06}     /
                   {e54}             {e50}               {e43}             {e36}               {e30}             {e22}
                    \\            /        {i13}        \\            /        {i10}        \\            /
                    {n39}--{e55}--{n40}       {t13}       {n32}--{e44}--{n33}       {t10}       {n24}--{e31}--{n25}
-                  /              \\       {p13}       /              \\       {p10}       /              \\
+                  /              \\      {p13}     /              \\      {p10}     /              \\
                  {e62}               {e56}             {e51}               {e45}             {e37}               {e32}
                 /        {i16}        \\            /        {i14}        \\            /        {i11}        \\
              {n47}       {t16}       {n41}--{e57}--{n42}       {t14}       {n34}--{e46}--{n35}       {t11}       {n26}
-                 \\       {p16}       /              \\       {p14}       /              \\       {p11}       /
-                  {e66}             {e63}               {e58}             {e52}               {e47}             {e38}
+                 \\      {p16}     /              \\      {p14}     /              \\      {p11}     /
+    {h07}- - -{e66}             {e63}               {e58}             {e52}               {e47}             {e38}- - -{h04}
                    \\            /        {i17}        \\            /        {i15}        \\            /
                    {n48}--{e67}--{n49}       {t17}       {n43}--{e59}--{n44}       {t15}       {n36}--{e48}--{n37}
-                                 \\       {p17}       /              \\       {p15}       /
+                                 \\      {p17}     /              \\      {p15}     /
                                   {e68}             {e64}               {e60}             {e53}
                                    \\            /        {i18}        \\            /
                                    {n50}--{e69}--{n51}       {t18}       {n45}--{e61}--{n46}
-                                                 \\       {p18}       /
-                                                  {e70}             {e65}
+                                                 \\      {p18}     /      ||
+                                    {h08}- - -{e70}             {e65}   {h06}
                                                    \\            /
                                                    {n52}--{e71}--{n53}
 
