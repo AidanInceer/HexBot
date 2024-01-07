@@ -140,7 +140,7 @@ class Player:
                 self.build_road(board)
         else:
             print("Not enough resources to build a road, please choose again")
-            self.build_road(board)
+            self.build(board)
 
     def trade(self, board: Board):
         rates = self.determine_trade_rates(board)

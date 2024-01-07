@@ -27,10 +27,12 @@ class Game:
         for player in self.players:
             print(f"{player.color}'s turn to setup")
             player.build(self.board, setup=True)
+            self.board.display()
 
         for player in self.players[::-1]:
             print(f"{player.color}'s turn to setup")
             player.build(self.board, setup=True)
+            self.board.display()
 
     def check_win(self):
         for player in self.players:
