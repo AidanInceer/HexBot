@@ -1,3 +1,22 @@
+## 1.1.0 (2024-01-07)
+
+### Feat
+
+- add pip and colour fixes
+- add colours to the board
+- added development card deck and robber functionality
+- add core functionality for development cards
+
+### Fix
+
+- update board formatting
+- robber movement and player resource discarding
+- align indexes for nodes, tiles, harbor etc
+
+### Refactor
+
+- update formatting of dev card deck
+
 ## 1.0.0 (2024-01-02)
 
 ### BREAKING CHANGE
