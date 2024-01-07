@@ -20,3 +20,6 @@ class Harbor:
 
     def trade_rate(self):
         return self.rate
+
+    def display_harbor(self):
+        return f"[{self.resource} {self.rate}:1]"
