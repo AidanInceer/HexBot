@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import random
 from dataclasses import dataclass, field
 from typing import List, Union
@@ -5,6 +7,7 @@ from typing import List, Union
 from src.board.board import Board
 from src.build.buildings import Buildings, City, Road, Settlement
 from src.cards import Knight, Monopoly, RoadBuilding, VictoryPoint, YearOfPlenty
+from src.deck import CardDeck
 from src.resources import Resources
 
 
@@ -25,7 +28,7 @@ class Player:
         print(f"Roll: {roll}")
         return roll
 
-    def build(self, board: Board, setup=False):
+    def build(self, board: Board, setup: bool = False):
         self.end_building = False
         while not self.end_building:
             if setup:
@@ -118,7 +121,7 @@ class Player:
                 self.score -= 1
                 return
 
-    def build_road(self, board: Board):
+    def build_road(self, board: Board, dev_card: bool = False):
         if self.resources.brick.count >= 1 and self.resources.wood.count >= 1:
             edge_id = int(input("Choose road location - [0-71]:"))
             nearby_edge_ids = board.edges[edge_id].edges
@@ -138,6 +141,25 @@ class Player:
             else:
                 print("Invalid location, select a build option again.")
                 self.build_road(board)
+        elif dev_card:
+            # TODO: refactor this to be more DRY
+            nearby_edge_ids = board.edges[edge_id].edges
+            nearby_node_ids = board.edges[edge_id].nodes
+            nearby_edge_colors = [board.edges[edge].color for edge in nearby_edge_ids]
+            nearby_nodes_colors = [board.nodes[node].color for node in nearby_node_ids]
+            if board.edges[edge_id].occupied is False and self.color in (
+                nearby_edge_colors + nearby_nodes_colors
+            ):
+                road = Road(self.color, edge_id)
+                self.resources.brick.count -= 1
+                self.resources.wood.count -= 1
+
+                self.buildings.roads.append(road)
+                board.edges[edge_id].occupied = True
+                board.edges[edge_id].color = self.color
+            else:
+                print("Invalid location, select a build option again.")
+                self.build_road(board, dev_card=True)
         else:
             print("Not enough resources to build a road, please choose again")
             self.build(board)
@@ -199,18 +221,18 @@ class Player:
 
         return {**base_rates, **harbor_rates}
 
-    def dev_card(self, board: Board):
+    def dev_card(self, board: Board, players: List[Player], deck: CardDeck):
         self._dev_card = False
         while not self._dev_card:
             choice = input("1=Collect, 2=Play, 3=End:")
             if choice == "1":
-                self.collect_dev_card(board)
+                self.collect_dev_card(board, deck)
             elif choice == "2":
-                self.select_dev_card_to_play(board)
+                self.select_dev_card_to_play(board, players)
             elif choice == "3":
                 self._dev_card = True
 
-    def collect_dev_card(self, board: Board):
+    def collect_dev_card(self, deck: CardDeck):
         if (
             self.resources.sheep.count >= 1
             and self.resources.wheat.count >= 1
@@ -219,15 +241,12 @@ class Player:
             self.resources.sheep.count -= 1
             self.resources.wheat.count -= 1
             self.resources.ore.count -= 1
-            selected = board.select_dev_card()
-            if selected is not None:
-                self.cards.append(selected)
-                self._dev_card = False
-                print(f"Collected Development Card: {selected.__class__.__name__}")
-            else:
-                print("No more dev cards left")
 
-    def select_dev_card_to_play(self, board: Board):
+            card = deck.select_dev_card()
+            self.cards.append(card)
+            print(f"Player {self.color} collected a {card.__class__.__name__} card.")
+
+    def select_dev_card_to_play(self, board: Board, players: List[Player]):
         if len(self.cards) > 0:
             chosen = input("Which dev card would you like to play: ")
             card_types = [
@@ -241,16 +260,112 @@ class Player:
                 if chosen == card_type[0]:
                     for card in self.cards:
                         if isinstance(card, card_type[1]):
-                            self.play_dev_card(card, board)
+                            self.play_dev_card(card, board, players)
 
     def play_dev_card(
         self,
         card: Union[Knight, VictoryPoint, Monopoly, RoadBuilding, YearOfPlenty],
         board: Board,
-    ):
-        card.play(board)
+        players: List[Player],
+    ) -> None:
+        if isinstance(card, Knight):
+            self.play_kinght(card, board, players)
+        elif isinstance(card, VictoryPoint):
+            self.play_victory_point(card, board)
+        elif isinstance(card, Monopoly):
+            self.play_monopoly(card, board, players)
+        elif isinstance(card, RoadBuilding):
+            self.play_road_building(card, board)
+        elif isinstance(card, YearOfPlenty):
+            self.play_year_of_plenty(card, board)
+
         self.cards.remove(card)
-        self.dev_card = True
+        self._dev_card = True
+
+        return None
+
+    def play_kinght(self, board: Board, players: List[Player]):
+        self.activate_knight(board, players)
+
+    def activate_knight(self, board: Board, players: List[Player]):
+        print("Played Knight")
+        # move and update the robbber location
+        robber_tile = board.get_robber_tile()
+
+        robber_moved = False
+        while not robber_moved:
+            move_robber = int(input("Choosen a Tile [0-18] to move the Robber to: "))
+            if move_robber == robber_tile.id:
+                print("Robber must be moved to a different tile.")
+            else:
+                new_robber_tile = board.set_robber_tile(move_robber)
+                new_robber_tile.robber = True
+                robber_tile.robber = False
+                robber_moved = True
+
+        # choosen a player to steal a random resource from
+        # if the player has no resources, they are skipped
+        adjacent_nodes = new_robber_tile.get_near_nodes()
+
+        able_to_steal_from = set()
+        for node in adjacent_nodes:
+            if isinstance(board.nodes[node].building, (Settlement, City)):
+                able_to_steal_from.add(board.nodes[node].building.color)
+
+        if self.color in able_to_steal_from:
+            able_to_steal_from.remove(self.color)
+
+        if len(able_to_steal_from) == 0:
+            print("No players to steal from.")
+
+        else:
+            select_player = input(
+                f"Choosen a player to steal from {able_to_steal_from}: "
+            )
+
+            robbed_player = [
+                player
+                for player in players
+                if player.color in select_player and player.total_resources() > 0
+            ]
+            if len(robbed_player) == 0:
+                print("No players to steal from.")
+            else:
+                robbed_player = robbed_player[0]
+                available_resources = [
+                    str(res.__class__.__name__).lower()
+                    for key, res in robbed_player.resources.__dict__.items()
+                    if res.count > 0
+                ]
+                random_resource = random.choice(list(available_resources))
+
+                robbed_player.resources[random_resource].count -= 1
+                self.resources[random_resource].count += 1
+                print(
+                    f"{self.color} stole {random_resource} from {robbed_player.color}."
+                )
+
+    def play_victory_point(self):
+        self.score += 1
+        print(f"Player {self.color} played a Victory Point card.")
+
+    def play_monopoly(self, players: List[Player]):
+        resource = input("Which resource would you like to monopolize: ")
+        for player in players:
+            if player.color != self.color:
+                self.resources[resource].count += player.resources[resource].count
+                player.resources[resource].count = 0
+
+    def play_road_building(self, board: Board):
+        print("Played Road Building")
+        self.build_road(board, dev_card=True)
+        self.build_road(board, dev_card=True)
+
+    def play_year_of_plenty(self):
+        resource = input("Which resource would you like to collect: ")
+        self.resources[resource].count += 1
+        resource = input("Which resource would you like to collect: ")
+        self.resources[resource].count += 1
 
     def total_resources(self) -> int:
         total = 0

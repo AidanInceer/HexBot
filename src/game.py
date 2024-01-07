@@ -61,7 +61,7 @@ class Game:
             elif choice == "2":
                 player.trade(self.board)
             elif choice == "3":
-                player.dev_card(self.board)
+                player.dev_card(self.board, self.deck, self.players)
             elif choice == "4":
                 self.turn_ended = True
 

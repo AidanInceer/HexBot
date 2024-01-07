@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import random
 from dataclasses import dataclass
 from typing import List, Optional
@@ -28,7 +30,7 @@ class Board:
     def active_tiles(self, roll: int) -> List[Tile]:
         return [tile for tile in self.tiles if tile.token == roll]
 
-    def set_robber_tile(self, selected_tile) -> Tile:
+    def set_robber_tile(self, selected_tile: Tile) -> Tile:
         for tile in self.tiles:
             if tile.id == selected_tile:
                 return tile
