@@ -6,6 +6,7 @@ from src.board.tile import Tile
 from src.build.buildings import City, Settlement
 from src.deck import CardDeck
 from src.player import Player
+from src.resources import Brick, Ore, Resources, Sheep, Wheat, Wood
 
 
 @dataclass
@@ -135,15 +136,28 @@ class Game:
                 print("No players to steal from.")
             else:
                 robbed_player = robbed_player[0]
+                types = (
+                    Brick,
+                    Ore,
+                    Sheep,
+                    Wheat,
+                    Wood,
+                )
+
+                # Get the available resources of the robbed player
                 available_resources = [
-                    str(res.__class__.__name__).lower()
-                    for key, res in robbed_player.resources.__dict__.items()
-                    if res.count > 0
+                    resource_name.lower()
+                    for resource_name, resource in robbed_player.resources.__dict__.items()
+                    if isinstance(resource, types) and resource.count > 0
                 ]
+
+                # Choose a random resource to steal
                 random_resource = random.choice(list(available_resources))
 
+                # Update the resource counts for the current player and the robbed player
                 robbed_player.resources[random_resource].count -= 1
                 current_player.resources[random_resource].count += 1
+
                 print(
                     f"{current_player.color} stole {random_resource} from {robbed_player.color}."
                 )

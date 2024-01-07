@@ -7,8 +7,8 @@ class Brick:
     count: int = 0
     type: str = "brick"
 
-    def __repr__(self) -> str:
-        return str(self.count)
+    def __repr__(self) -> int:
+        return self.count
 
     def __str__(self) -> str:
         return str(self.count)
@@ -19,8 +19,8 @@ class Ore:
     count: int = 0
     type: str = "ore"
 
-    def __repr__(self) -> str:
-        return str(self.count)
+    def __repr__(self) -> int:
+        return self.count
 
     def __str__(self) -> str:
         return str(self.count)
@@ -31,8 +31,8 @@ class Sheep:
     count: int = 0
     type: str = "sheep"
 
-    def __repr__(self) -> str:
-        return str(self.count)
+    def __repr__(self) -> int:
+        return self.count
 
     def __str__(self) -> str:
         return str(self.count)
@@ -43,8 +43,8 @@ class Wheat:
     count: int = 0
     type: str = "wheat"
 
-    def __repr__(self) -> str:
-        return str(self.count)
+    def __repr__(self) -> int:
+        return self.count
 
     def __str__(self) -> str:
         return str(self.count)
@@ -55,8 +55,8 @@ class Wood:
     count: int = 0
     type: str = "wood"
 
-    def __repr__(self) -> str:
-        return str(self.count)
+    def __repr__(self) -> int:
+        return self.count
 
     def __str__(self) -> str:
         return str(self.count)
