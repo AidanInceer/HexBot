@@ -34,3 +34,6 @@ class Tile:
 
     def has_robber(self):
         return self.robber
+
+    def display_id(self):
+        return str(self.id).zfill(2)
