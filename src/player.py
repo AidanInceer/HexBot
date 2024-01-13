@@ -2,18 +2,19 @@ from __future__ import annotations
 
 import random
 from dataclasses import dataclass, field
-from typing import List, Union
+from typing import Dict, List, Union
 
 from src.board.board import Board
 from src.build.buildings import Buildings, City, Road, Settlement
-from src.cards import Knight, Monopoly, RoadBuilding, VictoryPoint, YearOfPlenty
-from src.deck import CardDeck
+from src.deck.cards import Knight, Monopoly, RoadBuilding, VictoryPoint, YearOfPlenty
+from src.deck.deck import CardDeck
+from src.game.auto_setup import setup
 from src.resources import Resources
 
 
 @dataclass
 class Player:
-    name: Union[None, str] = None
+    name: Union[None, int] = None
     color: Union[None, str] = None
     score: int = 0
     type: Union[None, str] = None
@@ -28,12 +29,19 @@ class Player:
         print(f"Roll: {roll}")
         return roll
 
-    def build(self, board: Board, setup: bool = False):
+    def build(self, board: Board, setup: bool = False, auto=False):
         self.end_building = False
         while not self.end_building:
-            if setup:
+            if setup and auto:
+                self.build_settlement(board, auto=True)
+                self.build_road(board, auto=True)
+                self.end_building = True
+
+            if setup and not auto:
                 self.build_settlement(board)
+                board.display()
                 self.build_road(board)
+                board.display()
                 self.end_building = True
 
             if not setup:
@@ -47,9 +55,27 @@ class Player:
                 elif choice == "4":
                     self.end_building = True
 
-    def build_settlement(self, board: Board):
+    def build_settlement(self, board: Board, auto: bool = False):
         # only build settlement if you have 1 brick, 1 wood, 1 sheep, 1 wheat.
-        if (
+        if auto:
+            node_id = setup[self.name][0]["settlement"]
+            if board.nodes[node_id].occupied:
+                node_id = setup[self.name][1]["settlement"]
+
+            settlement = Settlement(self.color, node_id)
+            self.resources.brick.count -= 1
+            self.resources.wood.count -= 1
+            self.resources.sheep.count -= 1
+            self.resources.wheat.count -= 1
+            self.score += 1
+            self.buildings.settlements.append(settlement)
+            board.nodes[node_id].occupied = True
+            board.nodes[node_id].building = settlement
+            board.nodes[node_id].color = self.color
+            for node in board.nodes[node_id].nodes:
+                board.nodes[node].occupied = True
+
+        elif (
             self.resources.brick.count >= 1
             and self.resources.wood.count >= 1
             and self.resources.sheep.count >= 1
@@ -121,71 +147,124 @@ class Player:
                 self.score -= 1
                 return
 
-    def build_road(self, board: Board, dev_card: bool = False):
-        if self.resources.brick.count >= 1 and self.resources.wood.count >= 1:
-            edge_id = int(input("Choose road location - [0-71]:"))
-            nearby_edge_ids = board.edges[edge_id].edges
-            nearby_node_ids = board.edges[edge_id].nodes
-            nearby_edge_colors = [board.edges[edge].color for edge in nearby_edge_ids]
-            nearby_nodes_colors = [board.nodes[node].color for node in nearby_node_ids]
-            if board.edges[edge_id].occupied is False and self.color in (
-                nearby_edge_colors + nearby_nodes_colors
-            ):
-                road = Road(self.color, edge_id)
-                self.resources.brick.count -= 1
-                self.resources.wood.count -= 1
+    def build_road(self, board: Board, dev_card: bool = False, auto: bool = False):
+        if auto:
+            self.auto_build_road(board)
 
-                self.buildings.roads.append(road)
-                board.edges[edge_id].occupied = True
-                board.edges[edge_id].color = self.color
-            else:
-                print("Invalid location, select a build option again.")
-                self.build_road(board)
+        elif self.resources.brick.count >= 1 and self.resources.wood.count >= 1:
+            self.build_road_default(board)
         elif dev_card:
-            # TODO: refactor this to be more DRY
-            nearby_edge_ids = board.edges[edge_id].edges
-            nearby_node_ids = board.edges[edge_id].nodes
-            nearby_edge_colors = [board.edges[edge].color for edge in nearby_edge_ids]
-            nearby_nodes_colors = [board.nodes[node].color for node in nearby_node_ids]
-            if board.edges[edge_id].occupied is False and self.color in (
-                nearby_edge_colors + nearby_nodes_colors
-            ):
-                road = Road(self.color, edge_id)
-                self.resources.brick.count -= 1
-                self.resources.wood.count -= 1
-
-                self.buildings.roads.append(road)
-                board.edges[edge_id].occupied = True
-                board.edges[edge_id].color = self.color
-            else:
-                print("Invalid location, select a build option again.")
-                self.build_road(board, dev_card=True)
+            self.build_road_dev_card(board)
         else:
             print("Not enough resources to build a road, please choose again")
             self.build(board)
 
-    def trade(self, board: Board):
+    def auto_build_road(self, board: Board) -> None:
+        edge_id = setup[self.name][0]["road"]
+        if board.edges[edge_id].occupied:
+            edge_id = setup[self.name][1]["road"]
+
+        road = Road(self.color, edge_id)
+        self.resources.brick.count -= 1
+        self.resources.wood.count -= 1
+
+        self.buildings.roads.append(road)
+        board.edges[edge_id].occupied = True
+        board.edges[edge_id].color = self.color
+
+    def build_road_default(self, board: Board) -> None:
+        edge_id = int(input("Choose road location - [0-71]:"))
+        nearby_edge_ids = board.edges[edge_id].edges
+        nearby_node_ids = board.edges[edge_id].nodes
+        nearby_edge_colors = [board.edges[edge].color for edge in nearby_edge_ids]
+        nearby_nodes_colors = [board.nodes[node].color for node in nearby_node_ids]
+        if board.edges[edge_id].occupied is False and self.color in (
+            nearby_edge_colors + nearby_nodes_colors
+        ):
+            road = Road(self.color, edge_id)
+            self.resources.brick.count -= 1
+            self.resources.wood.count -= 1
+
+            self.buildings.roads.append(road)
+            board.edges[edge_id].occupied = True
+            board.edges[edge_id].color = self.color
+        else:
+            print("Invalid location, select a build option again.")
+            self.build_road(board)
+
+    def build_road_dev_card(self, board: Board) -> None:
+        edge_id = int(input("Choose road location - [0-71]:"))
+        nearby_edge_ids = board.edges[edge_id].edges
+        nearby_node_ids = board.edges[edge_id].nodes
+        nearby_edge_colors = [board.edges[edge].color for edge in nearby_edge_ids]
+        nearby_nodes_colors = [board.nodes[node].color for node in nearby_node_ids]
+        if board.edges[edge_id].occupied is False and self.color in (
+            nearby_edge_colors + nearby_nodes_colors
+        ):
+            road = Road(self.color, edge_id)
+            self.buildings.roads.append(road)
+            board.edges[edge_id].occupied = True
+            board.edges[edge_id].color = self.color
+        else:
+            print("Invalid location, select a build option again.")
+            self.build_road(board, dev_card=True)
+
+    def trade(self, board: Board, players: List[Player]):
         rates = self.determine_trade_rates(board)
-        # Trade with bank
-        # select a resource to trade
         trade_type = int(input("Player Trade (1), Bank/Port Trade (2), Cancel (3): "))
-        if trade_type == 2:
-            resource = input("Which resource would you like to trade: ")
-            receive = input("Which resource would you like to receive: ")
 
-            if self.resources[resource].count >= rates[resource]:
-                self.resources[resource].count -= rates[resource]
-                self.resources[receive].count += 1
-
-                print(f"Traded {rates[resource]} {resource} for 1 {receive}")
-            else:
-                print("Not enough resources to trade, please choose again")
-                self.trade(board)
-
+        if trade_type == 1:
+            self.player_trade(players)
+        elif trade_type == 2:
+            self.bank_port_trade(rates, board, players)
         elif trade_type == 3:
             pass
 
-    def determine_trade_rates(self, board: Board):
+    def bank_port_trade(
+        self, rates: Dict[str, int], board: Board, players: List[Player]
+    ) -> None:
+        resource = input("Which resource would you like to trade: ")
+        receive = input("Which resource would you like to receive: ")
+
+        if self.resources[resource].count >= rates[resource]:
+            self.resources[resource].count -= rates[resource]
+            self.resources[receive].count += 1
+            print(f"Traded {rates[resource]} {resource} for 1 {receive}")
+        else:
+            print("Not enough resources to trade, please choose again")
+            self.trade(board, players)
+
+    def player_trade(self, players: List[Player]) -> None:
+        print(f"{self.color} has {self.resources}")
+        resource = input("Which resource would you like to trade: ")
+        get_amount = int(input("How many would you like to trade: "))
+        receive = input("Which resource would you like to receive: ")
+        receive_amount = int(input("How many would you like to trade: "))
+
+        traded = False
+        while not traded:
+            for player in players:
+                if (
+                    player.color != self.color
+                    and player.resources[resource].count >= receive_amount
+                ):
+                    player_accept = input(
+                        f"{player.color} would you like to trade {resource} for {receive} [Y/N]: "
+                    ).upper()
+                    if player_accept == "Y":
+                        player.resources[resource].count -= receive_amount
+                        player.resources[receive].count += get_amount
+                        self.resources[resource].count += receive_amount
+                        self.resources[receive].count -= get_amount
+                        print(f"Traded {resource} for {receive}")
+                        traded = True
+                    elif player_accept == "N":
+                        print(f"{player.color} declined trade.")
+                else:
+                    print("Player does not have enough resources to trade.")
+        print(f"{self.color} has {self.resources}")
+
+    def determine_trade_rates(self, board: Board) -> Dict[str, int]:
         base_rates = {
             "brick": 4,
             "wood": 4,

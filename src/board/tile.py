@@ -24,7 +24,7 @@ class Tile:
         self.robber: bool = robber
 
     def __repr__(self) -> str:
-        return f"Tile(name={self.type.name}, id={self.id}, token={self.token}, nodes={self.nodes})"
+        return f"Tile(type={self.type.name}, id={self.id}, token={self.token}, nodes={self.nodes}, robber={self.robber})"
 
     def get_near_nodes(self):
         return self.nodes
@@ -102,7 +102,11 @@ class Tile:
             11: "..   ",
             12: ".    ",
         }
-        if self.token is None:
+        if isinstance(self.type, Desert) and self.robber:
+            pip = " (R) "
+        elif isinstance(self.type, Desert):
+            pip = "     "
+        elif self.robber:
             pip = " (R) "
         else:
             pip = str(mapping[self.token])

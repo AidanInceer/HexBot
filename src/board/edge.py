@@ -25,7 +25,7 @@ class Edge:
             output = f"{Fore.BLUE + str(self.id).zfill(2) + Fore.RESET}"
         elif self.color == "Green":
             output = f"{Fore.GREEN + str(self.id).zfill(2) + Fore.RESET}"
-        elif self.color == "Orange":
+        elif self.color == "Yellow":
             output = f"{Fore.YELLOW + str(self.id).zfill(2) + Fore.RESET}"
         else:
             output = f"{str(self.id).zfill(2)}"

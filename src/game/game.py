@@ -4,9 +4,11 @@ from dataclasses import dataclass, field
 from src.board.board import Board
 from src.board.tile import Tile
 from src.build.buildings import City, Settlement
-from src.deck import CardDeck
+from src.deck.deck import CardDeck
 from src.player import Player
-from src.resources import Brick, Ore, Resources, Sheep, Wheat, Wood
+from src.resources import Brick, Ore, Sheep, Wheat, Wood
+
+from .types import GameTypes
 
 
 @dataclass
@@ -15,34 +17,44 @@ class Game:
     deck: CardDeck
     board: Board = field(default_factory=Board)
     game_ended: bool = False
+    game_type: GameTypes = GameTypes.DEFAULT
 
-    def run(self):
+    def run(self) -> None:
         self.board.display()
-        self.game_setup()
+        if self.game_type in [GameTypes.AUTO_SETUP]:
+            self.auto_setup()
+        else:
+            self.game_setup()
         while not self.game_ended:
             for player in self.players:
                 self.turn(player)
                 self.check_win()
 
-    def game_setup(self):
+    def auto_setup(self) -> None:
+        for player in self.players:
+            player.build(self.board, setup=True, auto=True)
+
+        for player in self.players[::-1]:
+            player.build(self.board, setup=True, auto=True)
+        self.board.display()
+
+    def game_setup(self) -> None:
         for player in self.players:
             print(f"{player.color}'s turn to setup")
-            player.build(self.board, setup=True)
-            self.board.display()
+            player.build(self.board, setup=True, auto=False)
 
         for player in self.players[::-1]:
             print(f"{player.color}'s turn to setup")
-            player.build(self.board, setup=True)
-            self.board.display()
+            player.build(self.board, setup=True, auto=False)
 
-    def check_win(self):
+    def check_win(self) -> None:
         for player in self.players:
             if player.score == 10:
                 self.game_ended = True
                 print(f"{player.color} won!")
                 break
 
-    def turn(self, player: Player):
+    def turn(self, player: Player) -> None:
         self.turn_ended = False
         self.board.display()
         print(
@@ -60,13 +72,13 @@ class Game:
             if choice == "1":
                 player.build(self.board)
             elif choice == "2":
-                player.trade(self.board)
+                player.trade(self.board, self.players)
             elif choice == "3":
                 player.dev_card(self.board, self.deck, self.players)
             elif choice == "4":
                 self.turn_ended = True
 
-    def collect(self, roll: int):
+    def collect(self, roll: int) -> None:
         for player in self.players:
             active_tiles = [
                 tile for tile in self.board.active_tiles(roll) if not tile.robber
@@ -76,7 +88,7 @@ class Game:
                 self.collect_from_settlements(player, tile)
                 self.collect_from_cities(player, tile)
 
-    def collect_from_settlements(self, player: Player, tile: Tile):
+    def collect_from_settlements(self, player: Player, tile: Tile) -> None:
         active_nodes = [settlement.id for settlement in player.buildings.settlements]
         tile_nodes = tile.nodes
 
@@ -84,7 +96,7 @@ class Game:
             player.resources[tile.type.produces].count += 1
             print(f"{player.color} collected {tile.type.produces}.")
 
-    def collect_from_cities(self, player: Player, tile: Tile):
+    def collect_from_cities(self, player: Player, tile: Tile) -> None:
         active_nodes = [city.id for city in player.buildings.cities]
         tile_nodes = tile.nodes
 
@@ -92,7 +104,7 @@ class Game:
             player.resources[tile.type.produces].count += 2
             print(f"{player.color} collected {tile.type.produces}.")
 
-    def activate_robber(self, current_player: Player):
+    def activate_robber(self, current_player: Player) -> None:
         # move and update the robbber location
         robber_tile = self.board.get_robber_tile()
 
