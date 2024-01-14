@@ -4,6 +4,15 @@ from typing import Union
 
 @dataclass
 class Knight:
+    """
+    Represents a Knight card in the Catan game.
+
+    Attributes:
+        color (str or None): The color of the player who owns the card.
+        played (bool): Indicates whether the card has been played.
+        player (str or None): The name of the player who owns the card.
+    """
+
     color: Union[str, None] = None
     played: bool = False
     player: Union[str, None] = None
@@ -17,6 +26,15 @@ class Knight:
 
 @dataclass
 class VictoryPoint:
+    """
+    Represents a victory point card in the Catan game.
+
+    Attributes:
+        color (str or None): The color of the player who owns the card.
+        played (bool): Indicates whether the card has been played.
+        player (str or None): The name of the player who owns the card.
+    """
+
     color: Union[str, None] = None
     played: bool = False
     player: Union[str, None] = None
@@ -30,6 +48,15 @@ class VictoryPoint:
 
 @dataclass
 class Monopoly:
+    """
+    Represents a Monopoly card in the Catan game.
+
+    Attributes:
+        color (str or None): The player color associated with the Monopoly card.
+        played (bool): Indicates whether the Monopoly card has been played.
+        player (str or None): The player who owns the Monopoly card.
+    """
+
     color: Union[str, None] = None
     played: bool = False
     player: Union[str, None] = None
@@ -43,6 +70,15 @@ class Monopoly:
 
 @dataclass
 class RoadBuilding:
+    """
+    Represents a Road Building card in the Catan game.
+
+    Attributes:
+        color (str or None): The color of the player who owns the card.
+        played (bool): Indicates whether the card has been played.
+        player (str or None): The name of the player who owns the card.
+    """
+
     color: Union[str, None] = None
     played: bool = False
     player: Union[str, None] = None
@@ -56,6 +92,15 @@ class RoadBuilding:
 
 @dataclass
 class YearOfPlenty:
+    """
+    Represents a Year of Plenty card in the Catan game.
+
+    Attributes:
+        color (str or None): The color of the card.
+        played (bool): Indicates whether the card has been played.
+        player (str or None): The player who owns the card.
+    """
+
     color: Union[str, None] = None
     played: bool = False
     player: Union[str, None] = None

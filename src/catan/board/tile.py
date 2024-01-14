@@ -17,6 +17,14 @@ MOUNTAINS_COLOR = Fore.LIGHTBLACK_EX
 @dataclass
 class Tile:
     def __init__(self, type, id, robber=False):
+        """
+        Initialize a Tile object.
+
+        Args:
+            type: The type of the tile.
+            id: The ID of the tile.
+            robber: Whether the tile has a robber or not.
+        """
         self.type: Union[Desert, Fields, Forest, Hills, Mountains, Pasture] = type
         self.id: int = id
         self.token: Union[None, int] = None
@@ -24,36 +32,72 @@ class Tile:
         self.robber: bool = robber
 
     def __repr__(self) -> str:
+        """
+        Return a string representation of the Tile object.
+
+        Returns:
+            A string representation of the Tile object.
+        """
         return f"Tile(type={self.type.name}, id={self.id}, token={self.token}, nodes={self.nodes}, robber={self.robber})"
 
-    def get_near_nodes(self):
+    def get_near_nodes(self) -> List[int]:
+        """
+        Get the IDs of the nodes adjacent to the tile.
+
+        Returns:
+            A list of IDs of the nodes adjacent to the tile.
+        """
         return self.nodes
 
-    def tile(self):
+    def tile(self) -> Union[Desert, Fields, Forest, Hills, Mountains, Pasture]:
+        """
+        Get the type of the tile.
+
+        Returns:
+            The type of the tile.
+        """
         return self.type
 
-    def value(self):
+    def value(self) -> int:
+        """
+        Get the token value of the tile.
+
+        Returns:
+            The token value of the tile.
+        """
         return self.token
 
-    def display_type(self):
+    def display_type(self) -> str:
+        """
+        Get the formatted display type of the tile.
+
+        Returns:
+            The formatted display type of the tile.
+        """
         formatted = self.type.name.upper()
 
         if isinstance(self.type, Desert):
-            output = f"{DESERT_COLOR + ' '  + formatted + '  ' + Fore.RESET}"
+            output = f"{DESERT_COLOR} {formatted}  {Fore.RESET}"
         elif isinstance(self.type, Fields):
-            output = f"{FIELDS_COLOR + ' ' + formatted + '  ' + Fore.RESET}"
+            output = f"{FIELDS_COLOR} {formatted}  {Fore.RESET}"
         elif isinstance(self.type, Forest):
-            output = f"{FOREST_COLOR + ' ' + formatted + '  ' + Fore.RESET}"
+            output = f"{FOREST_COLOR} {formatted}  {Fore.RESET}"
         elif isinstance(self.type, Pasture):
-            output = f"{PASTURE_COLOR + ' ' + formatted + ' ' + Fore.RESET}"
+            output = f"{PASTURE_COLOR} {formatted} {Fore.RESET}"
         elif isinstance(self.type, Hills):
-            output = f"{HILLS_COLOR + '  ' + formatted + '  ' + Fore.RESET}"
+            output = f"{HILLS_COLOR}  {formatted}  {Fore.RESET}"
         elif isinstance(self.type, Mountains):
-            output = f"{MOUNTAINS_COLOR + formatted + Fore.RESET}"
+            output = f"{MOUNTAINS_COLOR}{formatted}{Fore.RESET}"
 
         return output
 
-    def display_token(self):
+    def display_token(self) -> str:
+        """
+        Get the formatted display token of the tile.
+
+        Returns:
+            The formatted display token of the tile.
+        """
         token_check = "07" if self.token is None else str(self.token).zfill(2)
         if isinstance(self.type, Desert):
             output = f"{DESERT_COLOR + token_check + Fore.RESET}"
@@ -70,10 +114,22 @@ class Tile:
 
         return output
 
-    def has_robber(self):
+    def has_robber(self) -> bool:
+        """
+        Check if the tile has a robber.
+
+        Returns:
+            True if the tile has a robber, False otherwise.
+        """
         return self.robber
 
     def display_id(self):
+        """
+        Get the formatted display ID of the tile.
+
+        Returns:
+            The formatted display ID of the tile.
+        """
         if isinstance(self.type, Desert):
             output = f"{DESERT_COLOR + str(self.id).zfill(2) + Fore.RESET}"
         elif isinstance(self.type, Fields):
@@ -89,7 +145,13 @@ class Tile:
 
         return output
 
-    def display_pips(self):
+    def display_pips(self) -> str:
+        """
+        Get the formatted display pips of the tile.
+
+        Returns:
+            The formatted display pips of the tile.
+        """
         mapping = {
             2: ".    ",
             3: "..   ",
@@ -126,7 +188,13 @@ class Tile:
 
         return output
 
-    def display_robber(self):
+    def display_robber(self) -> str:
+        """
+        Get the formatted display robber of the tile.
+
+        Returns:
+            The formatted display robber of the tile.
+        """
         if self.robber:
             output = "(R)"
         else:
