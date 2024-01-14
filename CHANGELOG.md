@@ -1,3 +1,19 @@
+## 1.2.0 (2024-01-14)
+
+### Feat
+
+- add longest road
+- update board, folder structure, auto setup, player trading
+
+### Fix
+
+- type hinting, complete dev cards
+- tile naming
+
+### Refactor
+
+- reduce duplication
+
 ## 1.1.0 (2024-01-07)
 
 ### Feat
