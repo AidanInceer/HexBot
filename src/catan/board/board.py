@@ -13,50 +13,124 @@ from .tile import Tile
 
 @dataclass
 class Board:
+    """
+    Represents a game board for the game of Catan.
+    """
+
     nodes: Optional[List[Node]] = None
     edges: Optional[List[Edge]] = None
     harbors: Optional[List[Harbor]] = None
     tiles: Optional[List[Tile]] = None
 
     def _node(self, node_id: int) -> Node:
+        """
+        Returns the node with the given ID.
+
+        Args:
+            node_id (int): The ID of the node.
+
+        Returns:
+            Node: The node with the given ID.
+        """
         return self.nodes[node_id]
 
     def _edge(self, edge_id: int) -> Edge:
+        """
+        Returns the edge with the given ID.
+
+        Args:
+            edge_id (int): The ID of the edge.
+
+        Returns:
+            Edge: The edge with the given ID.
+        """
         return self.edges[edge_id]
 
     def _harbor(self, harbor_id: int) -> Harbor:
+        """
+        Returns the harbor with the given ID.
+
+        Args:
+            harbor_id (int): The ID of the harbor.
+
+        Returns:
+            Harbor: The harbor with the given ID.
+        """
         return self.harbors[harbor_id]
 
     def active_tiles(self, roll: int) -> List[Tile]:
+        """
+        Returns a list of tiles that are active for the given roll.
+
+        Args:
+            roll (int): The roll value.
+
+        Returns:
+            List[Tile]: A list of active tiles for the given roll.
+        """
         return [tile for tile in self.tiles if tile.token == roll]
 
     def set_robber_tile(self, selected_tile: Tile) -> Tile:
+        """
+        Sets the robber tile to the selected tile.
+
+        Args:
+            selected_tile (Tile): The selected tile.
+
+        Returns:
+            Tile: The selected tile.
+        """
         for tile in self.tiles:
             if tile.id == selected_tile:
                 return tile
 
     def get_robber_tile(self) -> Tile:
+        """
+        Returns the tile where the robber is currently located.
+
+        Returns:
+            Tile: The tile with the robber.
+        """
         for tile in self.tiles:
             if tile.robber:
                 return tile
 
     def generate(self) -> None:
-        # generate nodes, edges, harbors, tiles - obects are mapped and linked using
-        # the mapping.py file and their internal init methods
+        """
+        Generates the nodes, edges, harbors, and tiles for the board.
+        """
         self.nodes = self.generate_nodes()
         self.edges = self.generate_edges()
         self.harbors = self.generate_harbors()
         self.tiles = self.generate_tiles()
 
-    def generate_nodes(self):
+    def generate_nodes(self) -> List[Node]:
+        """
+        Generates the nodes for the board.
+
+        Returns:
+            List[Node]: A list of generated nodes.
+        """
         self.nodes = [Node(id=node_id) for node_id in range(54)]
         return self.nodes
 
-    def generate_edges(self):
+    def generate_edges(self) -> List[Edge]:
+        """
+        Generates the edges for the board.
+
+        Returns:
+            List[Edge]: A list of generated edges.
+        """
         self.edges = [Edge(id=edge_id) for edge_id in range(72)]
         return self.edges
 
-    def generate_harbors(self):
+    def generate_harbors(self) -> List[Harbor]:
+        """
+        Generates the harbors for the board.
+
+        Returns:
+            List[Harbor]: A list of generated harbors.
+        """
         self.harbors = [
             Harbor(id=i, resource=res, rate=rate)
             for i, (res, rate) in enumerate(
@@ -76,6 +150,12 @@ class Board:
         return self.harbors
 
     def generate_tiles(self) -> List[Tile]:
+        """
+        Generates the tiles for the board.
+
+        Returns:
+            List[Tile]: A list of generated tiles.
+        """
         tile_ids = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
 
         tile_types = (
@@ -86,7 +166,6 @@ class Board:
             + [Mountains()] * 3
             + [Hills()] * 3
         )
-
         # TODO: improve this shuffle
         random.shuffle(tile_types)
 
@@ -102,7 +181,13 @@ class Board:
         self.apply_tokens()
         return self.tiles
 
-    def apply_tokens(self):
+    def apply_tokens(self) -> List[Tile]:
+        """
+        Applies tokens to the tiles.
+
+        Returns:
+            List[Tile]: A list of tiles with applied tokens.
+        """
         tokens = [2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12]
         for tile in self.tiles:
             if isinstance(tile.type, Desert):
@@ -113,6 +198,9 @@ class Board:
         return self.tiles
 
     def display(self) -> None:
+        """
+        Displays the board.
+        """
         n, e, i, t, p = [], [], [], [], []
         # create a lists of all nodes, edges, tiles and harbors.
         for j in range(54):
