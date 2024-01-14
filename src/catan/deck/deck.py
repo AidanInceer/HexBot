@@ -1,7 +1,13 @@
 import random
 from typing import List, Union
 
-from src.deck.cards import Knight, Monopoly, RoadBuilding, VictoryPoint, YearOfPlenty
+from src.catan.deck.cards import (
+    Knight,
+    Monopoly,
+    RoadBuilding,
+    VictoryPoint,
+    YearOfPlenty,
+)
 
 
 class CardDeck:

@@ -3,8 +3,8 @@ from typing import List, Union
 
 from colorama import Fore
 
-from src.board.mapping import tile_mapping
-from src.board.terrain import Desert, Fields, Forest, Hills, Mountains, Pasture
+from src.catan.board.mapping import tile_mapping
+from src.catan.board.terrain import Desert, Fields, Forest, Hills, Mountains, Pasture
 
 DESERT_COLOR = "\033[38;5;214m"
 FIELDS_COLOR = "\033[38;5;190m"

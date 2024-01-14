@@ -5,12 +5,18 @@ import random
 from dataclasses import dataclass, field
 from typing import Dict, List, Union
 
-from src.board.board import Board
-from src.build.buildings import Buildings, City, Road, Settlement
-from src.deck.cards import Knight, Monopoly, RoadBuilding, VictoryPoint, YearOfPlenty
-from src.deck.deck import CardDeck
-from src.game.auto_setup import setup
-from src.resources import Resources
+from src.catan.board.board import Board
+from src.catan.build.buildings import Buildings, City, Road, Settlement
+from src.catan.deck.cards import (
+    Knight,
+    Monopoly,
+    RoadBuilding,
+    VictoryPoint,
+    YearOfPlenty,
+)
+from src.catan.deck.deck import CardDeck
+from src.catan.game.auto_setup import setup
+from src.catan.resources.resources import Resources
 
 
 @dataclass

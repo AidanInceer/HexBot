@@ -1,27 +1,27 @@
 import random
 from dataclasses import dataclass, field
 
-from src.board.board import Board
-from src.board.tile import Tile
-from src.build.buildings import City, Settlement
-from src.deck.deck import CardDeck
-from src.player.player import Player
-from src.resources import Brick, Ore, Sheep, Wheat, Wood
-
-from .types import GameTypes
+from src.catan.board.board import Board
+from src.catan.board.tile import Tile
+from src.catan.build.buildings import City, Settlement
+from src.catan.deck.deck import CardDeck
+from src.catan.player.player import Player
+from src.catan.resources.resources import Brick, Ore, Sheep, Wheat, Wood
+from src.config.config import CentralConfig
 
 
 @dataclass
 class Game:
     players: list[Player]
     deck: CardDeck
+    game_type: str
+    config: CentralConfig
     board: Board = field(default_factory=Board)
     game_ended: bool = False
-    game_type: GameTypes = GameTypes.DEFAULT
 
     def run(self) -> None:
         self.board.display()
-        if self.game_type in [GameTypes.AUTO_SETUP]:
+        if self.game_type in [self.config.options.auto_types]:
             self.auto_setup()
         else:
             self.game_setup()

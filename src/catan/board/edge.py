@@ -3,7 +3,7 @@ from typing import List, Union
 
 from colorama import Fore
 
-from src.board.mapping import edge_mapping
+from src.catan.board.mapping import edge_mapping
 
 
 @dataclass
