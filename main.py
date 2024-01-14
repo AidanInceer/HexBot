@@ -1,13 +1,18 @@
-from src.board.board import Board
-from src.deck.deck import CardDeck
-from src.game.game import Game
-from src.game.types import GameTypes
-from src.player.player import Player
+from src.catan.board.board import Board
+from src.catan.deck.deck import CardDeck
+from src.catan.game.game import Game
+from src.catan.player.player import Player
+from src.config.config import load_config
+from src.utils.handlers import PathHandler
 
 if __name__ == "__main__":
+    config = load_config(PathHandler.config_path)
+
+    deck = CardDeck()
+
     board = Board()
     board.generate()
-    deck: CardDeck = CardDeck()
+
     game = Game(
         players=[
             Player(
@@ -29,6 +34,7 @@ if __name__ == "__main__":
         ],
         deck=deck,
         board=board,
-        game_type=GameTypes.AUTO_SETUP,
+        game_type=config.game_type,
+        config=config,
     )
     game.run()

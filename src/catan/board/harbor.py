@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import List
 
-from src.board.mapping import harbor_mapping
+from src.catan.board.mapping import harbor_mapping
 
 
 @dataclass
