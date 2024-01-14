@@ -18,13 +18,13 @@ class Board:
     harbors: Optional[List[Harbor]] = None
     tiles: Optional[List[Tile]] = None
 
-    def get_node(self, node_id: int) -> Node:
+    def _node(self, node_id: int) -> Node:
         return self.nodes[node_id]
 
-    def get_edge(self, edge_id: int) -> Edge:
+    def _edge(self, edge_id: int) -> Edge:
         return self.edges[edge_id]
 
-    def get_harbor(self, harbor_id: int) -> Harbor:
+    def _harbor(self, harbor_id: int) -> Harbor:
         return self.harbors[harbor_id]
 
     def active_tiles(self, roll: int) -> List[Tile]:

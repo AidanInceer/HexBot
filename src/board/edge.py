@@ -18,6 +18,9 @@ class Edge:
     def near_nodes(self):
         return self.nodes
 
+    def __hash__(self):
+        return hash(str(self))
+
     def display_edge(self):
         if self.color == "Red":
             output = f"{Fore.RED + str(self.id).zfill(2) + Fore.RESET}"

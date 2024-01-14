@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import collections
 import random
 from dataclasses import dataclass, field
 from typing import Dict, List, Union
@@ -23,39 +24,43 @@ class Player:
     cards: List[
         Union[Knight, VictoryPoint, Monopoly, RoadBuilding, YearOfPlenty]
     ] = field(default_factory=list)
+    longest_road: bool = False
+    largest_army: bool = False
 
-    def roll(self):
+    def roll(self) -> int:
         roll = random.randint(1, 6) + random.randint(1, 6)
         print(f"Roll: {roll}")
         return roll
 
-    def build(self, board: Board, setup: bool = False, auto=False):
+    def build(
+        self, board: Board, players: List[Player], setup: bool = False, auto=False
+    ) -> None:
         self.end_building = False
         while not self.end_building:
             if setup and auto:
-                self.build_settlement(board, auto=True)
-                self.build_road(board, auto=True)
+                self.build_settlement(board, players, auto=True)
+                self.build_road(board, players, auto=True)
                 self.end_building = True
 
             if setup and not auto:
-                self.build_settlement(board)
+                self.build_settlement(board, players)
                 board.display()
-                self.build_road(board)
+                self.build_road(board, players)
                 board.display()
                 self.end_building = True
 
             if not setup:
                 choice = input("1=Settlement, 2=City, 3=Road, 4=End: ")
                 if choice == "1":
-                    self.build_settlement(board)
+                    self.build_settlement(board, players)
                 elif choice == "2":
-                    self.build_city(board)
+                    self.build_city(board, players)
                 elif choice == "3":
-                    self.build_road(board)
+                    self.build_road(board, players)
                 elif choice == "4":
                     self.end_building = True
 
-    def build_settlement(self, board: Board, auto: bool = False):
+    def build_settlement(self, board: Board, players: List[Player], auto: bool = False):
         # only build settlement if you have 1 brick, 1 wood, 1 sheep, 1 wheat.
         if auto:
             node_id = setup[self.name][0]["settlement"]
@@ -102,13 +107,13 @@ class Player:
                     board.nodes[node].occupied = True
             else:
                 print("Invalid location, select a build option again.")
-                self.build_settlement(board)
+                self.build_settlement(board, players)
 
         else:
             print("Not enough resources to build a settlement, please choose again")
-            self.build(board)
+            self.build(board, players)
 
-    def build_city(self, board: Board):
+    def build_city(self, board: Board, players: List[Player]) -> None:
         # Only build city if you have 2 wheat and 3 ore.
         if self.resources.wheat.count >= 2 and self.resources.ore.count >= 3:
             # Get the node id of the city.
@@ -135,29 +140,114 @@ class Player:
                     board.nodes[node].occupied = True
             else:
                 print("Invalid location, select a build option again.")
-                self.build_city(board)
+                self.build_city(board, players)
         else:
             print("Not enough resources to build a city, please choose again")
-            self.build(board)
+            self.build(board, players)
 
-    def replace_settlement(self, node_id: int):
+    def replace_settlement(self, node_id: int) -> None:
         for settlement in self.buildings.settlements:
             if settlement.id == node_id:
                 self.buildings.settlements.remove(settlement)
                 self.score -= 1
-                return
 
-    def build_road(self, board: Board, dev_card: bool = False, auto: bool = False):
+    def build_road(
+        self,
+        board: Board,
+        players: List[Player],
+        dev_card: bool = False,
+        auto: bool = False,
+    ) -> None:
         if auto:
             self.auto_build_road(board)
 
         elif self.resources.brick.count >= 1 and self.resources.wood.count >= 1:
-            self.build_road_default(board)
+            self.build_road_default(board, players)
         elif dev_card:
             self.build_road_dev_card(board)
         else:
             print("Not enough resources to build a road, please choose again")
-            self.build(board)
+            self.build(board, players)
+
+        player_road_lengths = self.check_longest_road(board, players)
+        self.assign_longest_road(player_road_lengths, players)
+
+    def assign_longest_road(
+        self, player_road_lengths: Dict[Player, int], players: List[Player]
+    ) -> None:
+        lr_player = [player for player in players if player.longest_road]
+        lr_length = player_road_lengths[lr_player[0]] if len(lr_player) > 0 else 0
+
+        if len(lr_player) == 0 and player_road_lengths[self] >= 5:
+            self.longest_road = True
+            self.score += 2
+            print(f"{self.color} acquired the longest road.")
+        elif player_road_lengths[self] > lr_length and player_road_lengths[self] >= 5:
+            self.longest_road = True
+            self.score += 2
+            lr_player[0].longest_road = False
+            lr_player[0].score -= 2
+            print(f"{self.color} acquired the longest road from {lr_player[0].color}.")
+        else:
+            pass
+
+    def check_longest_road(
+        self, board: Board, players: List[Player]
+    ) -> Dict[Player, int]:
+        player_lengths = {}
+        for player in players:
+            player_roads = player.buildings.roads
+            current_road_ids = [road.id for road in player_roads]
+            mapping = list()
+            for edge_id in current_road_ids:
+                edge = board.edges[edge_id]
+                for adj_edge in edge.edges:
+                    joining_node = board._node(
+                        list(set(edge.nodes) & set(board._edge(adj_edge).nodes))[0]
+                    )
+                    if (
+                        edge.color == player.color
+                        and board.edges[adj_edge].color == player.color
+                        and (joining_node.color in [player.color, None])
+                    ):
+                        mapping.append((edge_id, adj_edge))
+
+            # TODO: improve this to handle multiple paths
+            if len(mapping) != 0:
+                graph = self.build_adjacency_list(mapping)
+                visited = set()
+                vertex = [key for key in graph.keys()][0]
+                player_lengths[player] = self.dfs(graph, vertex, visited) + 1
+            else:
+                player_lengths[player] = 0
+
+        return player_lengths
+
+    def dfs(self, graph: dict, vertex: int, visited: set, depth=0):
+        visited.add(vertex)
+        max_depth = depth  # Initialize max_depth for the current node
+
+        for neighbor in graph[vertex]:
+            if neighbor not in visited:
+                max_depth = max(
+                    max_depth, self.dfs(graph, neighbor, visited, depth + 1)
+                )
+
+        return max_depth
+
+    def build_adjacency_list(self, edges: list) -> Dict[int, List[int]]:
+        adjacency_list: dict = {}
+        for edge in edges:
+            source, destination = edge
+            if source not in adjacency_list:
+                adjacency_list[source] = []
+            adjacency_list[source].append(destination)
+
+        for key in adjacency_list.keys():
+            adjacency_list[key] = list(set(adjacency_list[key]))
+
+        adjacency_list = collections.OrderedDict(sorted(adjacency_list.items()))
+        return adjacency_list
 
     def auto_build_road(self, board: Board) -> None:
         edge_id = setup[self.name][0]["road"]
@@ -172,7 +262,7 @@ class Player:
         board.edges[edge_id].occupied = True
         board.edges[edge_id].color = self.color
 
-    def build_road_default(self, board: Board) -> None:
+    def build_road_default(self, board: Board, players: List[Player]) -> None:
         edge_id = int(input("Choose road location - [0-71]:"))
         nearby_edge_ids = board.edges[edge_id].edges
         nearby_node_ids = board.edges[edge_id].nodes
@@ -190,9 +280,9 @@ class Player:
             board.edges[edge_id].color = self.color
         else:
             print("Invalid location, select a build option again.")
-            self.build_road(board)
+            self.build_road(board, players)
 
-    def build_road_dev_card(self, board: Board) -> None:
+    def build_road_dev_card(self, board: Board, players: List[Player]) -> None:
         edge_id = int(input("Choose road location - [0-71]:"))
         nearby_edge_ids = board.edges[edge_id].edges
         nearby_node_ids = board.edges[edge_id].nodes
@@ -207,9 +297,9 @@ class Player:
             board.edges[edge_id].color = self.color
         else:
             print("Invalid location, select a build option again.")
-            self.build_road(board, dev_card=True)
+            self.build_road(board, players, dev_card=True)
 
-    def trade(self, board: Board, players: List[Player]):
+    def trade(self, board: Board, players: List[Player]) -> None:
         rates = self.determine_trade_rates(board)
         trade_type = int(input("Player Trade (1), Bank/Port Trade (2), Cancel (3): "))
 
@@ -300,7 +390,7 @@ class Player:
 
         return {**base_rates, **harbor_rates}
 
-    def dev_card(self, board: Board, players: List[Player], deck: CardDeck):
+    def dev_card(self, board: Board, players: List[Player], deck: CardDeck) -> None:
         self._dev_card = False
         while not self._dev_card:
             choice = input("1=Collect, 2=Play, 3=End:")
@@ -311,7 +401,7 @@ class Player:
             elif choice == "3":
                 self._dev_card = True
 
-    def collect_dev_card(self, deck: CardDeck):
+    def collect_dev_card(self, deck: CardDeck) -> None:
         if (
             self.resources.sheep.count >= 1
             and self.resources.wheat.count >= 1
@@ -325,7 +415,7 @@ class Player:
             self.cards.append(card)
             print(f"Player {self.color} collected a {card.__class__.__name__} card.")
 
-    def select_dev_card_to_play(self, board: Board, players: List[Player]):
+    def select_dev_card_to_play(self, board: Board, players: List[Player]) -> None:
         if len(self.cards) > 0:
             chosen = input("Which dev card would you like to play: ")
             card_types = [
@@ -354,7 +444,7 @@ class Player:
         elif isinstance(card, Monopoly):
             self.play_monopoly(card, board, players)
         elif isinstance(card, RoadBuilding):
-            self.play_road_building(card, board)
+            self.play_road_building(card, board, players)
         elif isinstance(card, YearOfPlenty):
             self.play_year_of_plenty(card, board)
 
@@ -363,10 +453,11 @@ class Player:
 
         return None
 
-    def play_kinght(self, board: Board, players: List[Player]):
+    def play_kinght(self, board: Board, players: List[Player]) -> None:
         self.activate_knight(board, players)
+        self.check_largest_army(players)
 
-    def activate_knight(self, board: Board, players: List[Player]):
+    def activate_knight(self, board: Board, players: List[Player]) -> None:
         print("Played Knight")
         # move and update the robbber location
         robber_tile = board.get_robber_tile()
@@ -424,23 +515,51 @@ class Player:
                     f"{self.color} stole {random_resource} from {robbed_player.color}."
                 )
 
-    def play_victory_point(self):
+    def check_largest_army(self, players: List[Player]) -> None:
+        la_active = any([player.largest_army for player in players])
+        played_knights = len(
+            [card for card in self.cards if isinstance(card, Knight) and card.played]
+        )
+        max_played = 0
+        for player in players:
+            knights_played = len(
+                [
+                    card
+                    for card in player.cards
+                    if isinstance(card, Knight) and card.played
+                ]
+            )
+            if knights_played > max_played:
+                max_played = knights_played
+
+        if not la_active and played_knights >= 3:
+            self.largest_army = True
+            self.score += 2
+
+        elif la_active and played_knights > max_played:
+            active_la_player = [player for player in players if player.largest_army][0]
+            self.largest_army = True
+            self.score += 2
+            active_la_player.largest_army = False
+            active_la_player.score -= 2
+
+    def play_victory_point(self) -> None:
         self.score += 1
         print(f"Player {self.color} played a Victory Point card.")
 
-    def play_monopoly(self, players: List[Player]):
+    def play_monopoly(self, players: List[Player]) -> None:
         resource = input("Which resource would you like to monopolize: ")
         for player in players:
             if player.color != self.color:
                 self.resources[resource].count += player.resources[resource].count
                 player.resources[resource].count = 0
 
-    def play_road_building(self, board: Board):
+    def play_road_building(self, board: Board, players: List[Player]) -> None:
         print("Played Road Building")
-        self.build_road(board, dev_card=True)
-        self.build_road(board, dev_card=True)
+        self.build_road(board, players=players, dev_card=True)
+        self.build_road(board, players=players, dev_card=True)
 
-    def play_year_of_plenty(self):
+    def play_year_of_plenty(self) -> None:
         resource = input("Which resource would you like to collect: ")
         self.resources[resource].count += 1
         resource = input("Which resource would you like to collect: ")
@@ -452,7 +571,7 @@ class Player:
             total += self.resources[resource].count
         return total
 
-    def discard_resources(self, total: int):
+    def discard_resources(self, total: int) -> None:
         discard_amount = total // 2
         print(
             f"Player {self.color} has too many resources, must discard {discard_amount}"
@@ -470,3 +589,6 @@ class Player:
                 discard_amount -= 1
             else:
                 print("You do not have any of that resource, please choose again.")
+
+    def __hash__(self):
+        return hash(str(self))

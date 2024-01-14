@@ -2,7 +2,7 @@ from src.board.board import Board
 from src.deck.deck import CardDeck
 from src.game.game import Game
 from src.game.types import GameTypes
-from src.player import Player
+from src.player.player import Player
 
 if __name__ == "__main__":
     board = Board()

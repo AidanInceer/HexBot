@@ -5,7 +5,7 @@ from src.board.board import Board
 from src.board.tile import Tile
 from src.build.buildings import City, Settlement
 from src.deck.deck import CardDeck
-from src.player import Player
+from src.player.player import Player
 from src.resources import Brick, Ore, Sheep, Wheat, Wood
 
 from .types import GameTypes
@@ -32,20 +32,20 @@ class Game:
 
     def auto_setup(self) -> None:
         for player in self.players:
-            player.build(self.board, setup=True, auto=True)
+            player.build(self.board, self.players, setup=True, auto=True)
 
         for player in self.players[::-1]:
-            player.build(self.board, setup=True, auto=True)
+            player.build(self.board, self.players, setup=True, auto=True)
         self.board.display()
 
     def game_setup(self) -> None:
         for player in self.players:
             print(f"{player.color}'s turn to setup")
-            player.build(self.board, setup=True, auto=False)
+            player.build(self.board, self.players, setup=True, auto=False)
 
         for player in self.players[::-1]:
             print(f"{player.color}'s turn to setup")
-            player.build(self.board, setup=True, auto=False)
+            player.build(self.board, self.players, setup=True, auto=False)
 
     def check_win(self) -> None:
         for player in self.players:
@@ -57,20 +57,22 @@ class Game:
     def turn(self, player: Player) -> None:
         self.turn_ended = False
         self.board.display()
-        print(
-            f"| {player.color}'s turn | Score: {player.score} | {player.cards} | {player.resources}  |\n"
-            "==========================================================================================="
-        )
+
         roll = player.roll()
         if roll == 7:
             self.activate_robber(player)
 
         self.collect(roll)
 
+        print(
+            f"{player.color}'s turn   Score: {player.score} LR:{player.longest_road} LA:{player.largest_army}  Cards: {player.cards}   {player.resources}  \n"
+            "==========================================================================================="
+        )
+
         while not self.turn_ended:
             choice = input("1=Build, 2=Trade, 3=Dev Cards(Play/Select), 4=End: ")
             if choice == "1":
-                player.build(self.board)
+                player.build(self.board, self.players, setup=False, auto=False)
             elif choice == "2":
                 player.trade(self.board, self.players)
             elif choice == "3":
@@ -111,7 +113,9 @@ class Game:
         robber_moved = False
         while not robber_moved:
             move_robber = int(input("Choosen a Tile [0-18] to move the Robber to: "))
-            if move_robber == robber_tile.id:
+            if move_robber < 0 or move_robber > 18:
+                print("Invalid tile.")
+            elif move_robber == robber_tile.id:
                 print("Robber must be moved to a different tile.")
             else:
                 new_robber_tile = self.board.set_robber_tile(move_robber)
