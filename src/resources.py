@@ -1,14 +1,11 @@
 from dataclasses import dataclass
-from typing import Union
+from typing import List, Union
 
 
 @dataclass
 class Brick:
     count: int = 0
     type: str = "brick"
-
-    def __repr__(self) -> str:
-        return str(self.count)
 
     def __str__(self) -> str:
         return str(self.count)
@@ -19,9 +16,6 @@ class Ore:
     count: int = 0
     type: str = "ore"
 
-    def __repr__(self) -> str:
-        return str(self.count)
-
     def __str__(self) -> str:
         return str(self.count)
 
@@ -30,9 +24,6 @@ class Ore:
 class Sheep:
     count: int = 0
     type: str = "sheep"
-
-    def __repr__(self) -> str:
-        return str(self.count)
 
     def __str__(self) -> str:
         return str(self.count)
@@ -43,9 +34,6 @@ class Wheat:
     count: int = 0
     type: str = "wheat"
 
-    def __repr__(self) -> str:
-        return str(self.count)
-
     def __str__(self) -> str:
         return str(self.count)
 
@@ -54,9 +42,6 @@ class Wheat:
 class Wood:
     count: int = 0
     type: str = "wood"
-
-    def __repr__(self) -> str:
-        return str(self.count)
 
     def __str__(self) -> str:
         return str(self.count)
@@ -90,13 +75,13 @@ class Resources:
     def set_attr(self, resource: Union[Brick, Ore, Sheep, Wheat, Wood]):
         self[resource].count += 1
 
-    def __getitem__(self, key):
+    def __getitem__(self, key) -> Union[Brick, Ore, Sheep, Wheat, Wood]:
         return self.__dict__.get(key)
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key, value) -> None:
         self[key] = value
 
-    def all_resources(self):
+    def all_resources(self) -> List[str]:
         return [
             self.brick.type,
             self.ore.type,
