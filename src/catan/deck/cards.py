@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Union
 
 
 @dataclass
@@ -13,9 +12,9 @@ class Knight:
         player (str or None): The name of the player who owns the card.
     """
 
-    color: Union[str, None] = None
+    color: str | None = None
     played: bool = False
-    player: Union[str, None] = None
+    player: str | None = None
 
     def __getitem__(self, key):
         return self.__dict__.get(key)
@@ -35,9 +34,9 @@ class VictoryPoint:
         player (str or None): The name of the player who owns the card.
     """
 
-    color: Union[str, None] = None
+    color: str | None = None
     played: bool = False
-    player: Union[str, None] = None
+    player: str | None = None
 
     def __getitem__(self, key):
         return self.__dict__.get(key)
@@ -57,9 +56,9 @@ class Monopoly:
         player (str or None): The player who owns the Monopoly card.
     """
 
-    color: Union[str, None] = None
+    color: str | None = None
     played: bool = False
-    player: Union[str, None] = None
+    player: str | None = None
 
     def __getitem__(self, key):
         return self.__dict__.get(key)
@@ -79,9 +78,9 @@ class RoadBuilding:
         player (str or None): The name of the player who owns the card.
     """
 
-    color: Union[str, None] = None
+    color: str | None = None
     played: bool = False
-    player: Union[str, None] = None
+    player: str | None = None
 
     def __getitem__(self, key):
         return self.__dict__.get(key)
@@ -101,9 +100,9 @@ class YearOfPlenty:
         player (str or None): The player who owns the card.
     """
 
-    color: Union[str, None] = None
+    color: str | None = None
     played: bool = False
-    player: Union[str, None] = None
+    player: str | None = None
 
     def __getitem__(self, key):
         return self.__dict__.get(key)

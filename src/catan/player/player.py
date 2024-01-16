@@ -3,7 +3,7 @@ from __future__ import annotations
 import collections
 import random
 from dataclasses import dataclass, field
-from typing import Dict, List, Union
+from typing import Dict, List
 
 from src.catan.board.board import Board
 from src.catan.buildings.buildings import Buildings, City, Road, Settlement
@@ -25,26 +25,26 @@ class Player:
     Represents a player in the game of Catan.
 
     Attributes:
-        name (Union[None, int]): The name or identifier of the player.
-        color (Union[None, str]): The color associated with the player.
+        name (None | int): The name or identifier of the player.
+        color (None | str): The color associated with the player.
         score (int): The current score of the player.
-        type (Union[None, str]): The type or role of the player.
+        type (None | str): The type or role of the player.
         buildings (Buildings): The buildings owned by the player.
         resources (Resources): The resources owned by the player.
-        cards (List[Union[Knight, VictoryPoint, Monopoly, RoadBuilding, YearOfPlenty]]): The development cards owned by the player.
+        cards (List[Knight | VictoryPoint | Monopoly | RoadBuilding | YearOfPlenty]): The development cards owned by the player.
         longest_road (bool): Indicates if the player has the longest road.
         largest_army (bool): Indicates if the player has the largest army.
     """
 
-    name: Union[None, int] = None
-    color: Union[None, str] = None
+    name: None | int = None
+    color: None | str = None
     score: int = 0
-    type: Union[None, str] = None
+    type: None | str = None
     buildings: Buildings = field(default_factory=Buildings)
     resources: Resources = field(default_factory=Resources)
-    cards: List[
-        Union[Knight, VictoryPoint, Monopoly, RoadBuilding, YearOfPlenty]
-    ] = field(default_factory=list)
+    cards: List[Knight | VictoryPoint | Monopoly | RoadBuilding | YearOfPlenty] = field(
+        default_factory=list
+    )
     longest_road: bool = False
     largest_army: bool = False
 
@@ -652,7 +652,7 @@ class Player:
 
     def play_dev_card(
         self,
-        card: Union[Knight, VictoryPoint, Monopoly, RoadBuilding, YearOfPlenty],
+        card: Knight | VictoryPoint | Monopoly | RoadBuilding | YearOfPlenty,
         board: Board,
         players: List[Player],
     ) -> None:
@@ -660,7 +660,7 @@ class Player:
         Plays a development card.
 
         Args:
-            card (Union[Knight, VictoryPoint, Monopoly, RoadBuilding, YearOfPlenty]): The development card to be played.
+            card (Knight | VictoryPoint | Monopoly | RoadBuilding | YearOfPlenty): The development card to be played.
             board (Board): The game board.
             players (List[Player]): The list of players in the game.
 
