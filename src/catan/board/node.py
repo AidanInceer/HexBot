@@ -4,7 +4,7 @@ from typing import List, Union
 from colorama import Fore
 
 from src.catan.board.mapping import node_mapping
-from src.catan.build.buildings import City, Settlement
+from src.catan.buildings.buildings import City, Settlement
 
 
 @dataclass

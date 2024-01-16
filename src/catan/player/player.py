@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 from typing import Dict, List, Union
 
 from src.catan.board.board import Board
-from src.catan.build.buildings import Buildings, City, Road, Settlement
+from src.catan.buildings.buildings import Buildings, City, Road, Settlement
 from src.catan.deck.cards import (
     Knight,
     Monopoly,

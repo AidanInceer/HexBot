@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 
 from src.catan.board.board import Board
 from src.catan.board.tile import Tile
-from src.catan.build.buildings import City, Settlement
+from src.catan.buildings.buildings import City, Settlement
 from src.catan.deck.deck import CardDeck
 from src.catan.player.player import Player
 from src.catan.resources.resources import Brick, Ore, Sheep, Wheat, Wood
