@@ -240,7 +240,7 @@ class Player:
         elif self.resources.brick.count >= 1 and self.resources.wood.count >= 1:
             self.build_road_default(board, players)
         elif dev_card:
-            self.build_road_dev_card(board)
+            self.build_road_dev_card(board, players)
         else:
             print("Not enough resources to build a road, please choose again")
             self.build(board, players)
@@ -595,7 +595,7 @@ class Player:
         while not self._dev_card:
             choice = input("1=Collect, 2=Play, 3=End:")
             if choice == "1":
-                self.collect_dev_card(board, deck)
+                self.collect_dev_card(deck)
             elif choice == "2":
                 self.select_dev_card_to_play(board, players)
             elif choice == "3":
@@ -668,22 +668,22 @@ class Player:
             None
         """
         if isinstance(card, Knight):
-            self.play_kinght(card, board, players)
+            self.play_knight(board, players)
         elif isinstance(card, VictoryPoint):
-            self.play_victory_point(card, board)
+            self.play_victory_point()
         elif isinstance(card, Monopoly):
-            self.play_monopoly(card, board, players)
+            self.play_monopoly(players)
         elif isinstance(card, RoadBuilding):
-            self.play_road_building(card, board, players)
+            self.play_road_building(board, players)
         elif isinstance(card, YearOfPlenty):
-            self.play_year_of_plenty(card, board)
+            self.play_year_of_plenty()
 
         self.cards.remove(card)
         self._dev_card = True
 
         return None
 
-    def play_kinght(self, board: Board, players: List[Player]) -> None:
+    def play_knight(self, board: Board, players: List[Player]) -> None:
         """
         Activates the knight and checks if the player has the largest army.
 
