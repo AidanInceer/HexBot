@@ -1,4 +1,5 @@
 import random
+from typing import List
 
 from src.catan.deck.cards import (
     Knight,
@@ -21,7 +22,7 @@ class CardDeck:
 
     def generate_dev_cards(
         self,
-    ) -> List[List[Knight | Monopoly | RoadBuilding | VictoryPoint | YearOfPlenty]]:
+    ) -> List[Knight | Monopoly | RoadBuilding | VictoryPoint | YearOfPlenty]:
         """
         Generates a list of development cards and shuffles them randomly.
 
