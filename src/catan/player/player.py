@@ -89,14 +89,14 @@ class Player:
                 self.end_building = True
 
             if not setup:
-                choice = input("1=Settlement, 2=City, 3=Road, 4=End: ")
-                if choice == "1":
+                choice = int(input("1=Settlement, 2=City, 3=Road, 4=End: "))
+                if choice == 1:
                     self.build_settlement(board, players)
-                elif choice == "2":
+                elif choice == 2:
                     self.build_city(board, players)
-                elif choice == "3":
+                elif choice == 3:
                     self.build_road(board, players)
-                elif choice == "4":
+                elif choice == 4:
                     self.end_building = True
 
     def build_settlement(
