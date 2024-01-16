@@ -4,11 +4,11 @@ import random
 from dataclasses import dataclass
 from typing import List, Optional
 
-from .edge import Edge
-from .harbor import Harbor
-from .node import Node
-from .terrain import Desert, Fields, Forest, Hills, Mountains, Pasture
-from .tile import Tile
+from src.catan.board.edge import Edge
+from src.catan.board.harbor import Harbor
+from src.catan.board.node import Node
+from src.catan.board.terrain import Desert, Fields, Forest, Hills, Mountains, Pasture
+from src.catan.board.tile import Tile
 
 
 @dataclass
