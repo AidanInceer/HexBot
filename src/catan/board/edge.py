@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Union
+from typing import List
 
 from colorama import Fore
 
@@ -21,7 +21,7 @@ class Edge:
         self.nodes: List[int] = edge_mapping[self.id]["adjacent_nodes"]
         self.edges: List[int] = edge_mapping[self.id]["adjacent_edges"]
         self.occupied: bool = False
-        self.color: Union[None, str] = None
+        self.color: None | str = None
 
     def near_nodes(self) -> List[int]:
         """

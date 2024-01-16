@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Union
+from typing import List
 
 from colorama import Fore
 
@@ -25,9 +25,9 @@ class Tile:
             id: The ID of the tile.
             robber: Whether the tile has a robber or not.
         """
-        self.type: Union[Desert, Fields, Forest, Hills, Mountains, Pasture] = type
+        self.type: Desert | Fields | Forest | Hills | Mountains | Pasture = type
         self.id: int = id
-        self.token: Union[None, int] = None
+        self.token: None | int = None
         self.nodes: List[int] = tile_mapping[self.id]["adjacent_nodes"]
         self.robber: bool = robber
 
@@ -49,7 +49,7 @@ class Tile:
         """
         return self.nodes
 
-    def tile(self) -> Union[Desert, Fields, Forest, Hills, Mountains, Pasture]:
+    def tile(self) -> Desert | Fields | Forest | Hills | Mountains | Pasture:
         """
         Get the type of the tile.
 

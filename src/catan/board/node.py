@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Union
+from typing import List
 
 from colorama import Fore
 
@@ -23,8 +23,8 @@ class Node:
             harbors (List[int]): List of IDs of adjacent harbors.
             tiles (List[int]): List of IDs of adjacent tiles.
             occupied (bool): Indicates if the node is occupied by a building.
-            building (Union[None, Settlement, City]): The building on the node, if any.
-            color (Union[None, str]): The color associated with the node, if any.
+            building (None | Settlement | City): The building on the node, if any.
+            color (None | str]): The color associated with the node, if any.
         """
         self.id: int = id
         self.nodes: List[int] = node_mapping[self.id]["adjacent_nodes"]
@@ -32,8 +32,8 @@ class Node:
         self.harbors: List[int] = node_mapping[self.id]["adjacent_harbor"]
         self.tiles: List[int] = node_mapping[self.id]["adjacent_tiles"]
         self.occupied: bool = False
-        self.building: Union[None, Settlement, City] = None
-        self.color: Union[None, str] = None
+        self.building: None | Settlement | City = None
+        self.color: None | str = None
 
     def near_nodes(self) -> List[int]:
         """

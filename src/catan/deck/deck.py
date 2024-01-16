@@ -1,5 +1,4 @@
 import random
-from typing import List, Union
 
 from src.catan.deck.cards import (
     Knight,
@@ -17,17 +16,17 @@ class CardDeck:
 
     def __init__(
         self,
-    ) -> List[Union[Knight, Monopoly, RoadBuilding, VictoryPoint, YearOfPlenty]]:
+    ) -> List[Knight | Monopoly | RoadBuilding | VictoryPoint | YearOfPlenty]:
         self.dev_cards = self.generate_dev_cards()
 
     def generate_dev_cards(
         self,
-    ) -> List[Union[Knight, Monopoly, RoadBuilding, VictoryPoint, YearOfPlenty]]:
+    ) -> List[List[Knight | Monopoly | RoadBuilding | VictoryPoint | YearOfPlenty]]:
         """
         Generates a list of development cards and shuffles them randomly.
 
         Returns:
-            List[Union[Knight, Monopoly, RoadBuilding, VictoryPoint, YearOfPlenty]]:
+            List[List[Knight | Monopoly | RoadBuilding | VictoryPoint | YearOfPlenty]]:
             A list of development cards.
         """
         self.dev_cards = [
@@ -63,12 +62,12 @@ class CardDeck:
 
     def select_dev_card(
         self,
-    ) -> Union[Knight, Monopoly, RoadBuilding, VictoryPoint, YearOfPlenty]:
+    ) -> Knight | Monopoly | RoadBuilding | VictoryPoint | YearOfPlenty | None:
         """
         Selects a development card from the deck.
 
         Returns:
-            Union[Knight, Monopoly, RoadBuilding, VictoryPoint, YearOfPlenty]: The selected development card.
+            List[Knight | Monopoly | RoadBuilding | VictoryPoint | YearOfPlenty]: The selected development card.
         """
         if len(self.dev_cards) == 0:
             return None
