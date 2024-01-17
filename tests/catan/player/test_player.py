@@ -2,19 +2,32 @@ import unittest
 from unittest.mock import patch
 
 from src.catan.board.board import Board
+from src.catan.buildings.buildings import Settlement
 from src.catan.player.player import Player
 
 
 class TestPlayer(unittest.TestCase):
     def setUp(self):
-        self.player = Player(color="red", name="1", type="human")
+        self.player = Player(color="red", name=0, type="human")
         self.board = Board()
         self.board.generate()
         self.players = [
-            Player(color="red"),
-            Player(color="blue"),
-            Player(color="green"),
-            Player(color="yellow"),
+            Player(
+                name=0,
+                color="Red",
+            ),
+            Player(
+                name=1,
+                color="Yellow",
+            ),
+            Player(
+                name=2,
+                color="Blue",
+            ),
+            Player(
+                name=3,
+                color="Green",
+            ),
         ]
 
     def test_roll_high(self):
@@ -77,3 +90,65 @@ class TestPlayer(unittest.TestCase):
         self.assertEqual(mock_build_city.call_count, 1)
         self.assertEqual(mock_build_settlement.call_count, 1)
         assert self.player.end_building is True
+
+    @patch("builtins.input", return_value=1)
+    def test_build_settlement(self, mock_input):
+        self.player.build_settlement(self.board, self.players, auto=False)
+
+        settlement = Settlement(self.player.color, 1)
+
+        assert self.board.nodes[1].occupied is True
+        assert self.board.nodes[1].building == settlement
+        assert self.board.nodes[1].color == self.player.color
+        assert self.player.resources["wood"].count == 3
+        assert self.player.resources["brick"].count == 3
+        assert self.player.resources["sheep"].count == 1
+        assert self.player.resources["wheat"].count == 1
+        assert self.player.score == 1
+        assert len(self.player.buildings.settlements) == 1
+        assert self.board.nodes[0].occupied is True
+        assert self.board.nodes[2].occupied is True
+
+    @patch("builtins.input", side_effect=[1, 10])
+    def test_build_settlement_invalid_location(self, mock_input):
+        self.board.nodes[1].occupied = True
+        self.player.build_settlement(self.board, self.players, auto=False)
+        settlement = Settlement(self.player.color, 10)
+
+        assert self.board.nodes[10].occupied is True
+        assert self.board.nodes[10].building == settlement
+        assert self.board.nodes[10].color == self.player.color
+        assert self.player.resources["wood"].count == 3
+        assert self.player.resources["brick"].count == 3
+        assert self.player.resources["sheep"].count == 1
+        assert self.player.resources["wheat"].count == 1
+        assert self.player.score == 1
+        assert len(self.player.buildings.settlements) == 1
+        assert self.board.nodes[2].occupied is True
+        assert self.board.nodes[9].occupied is True
+        assert self.board.nodes[11].occupied is True
+
+    @patch("builtins.input", side_effect=[1])
+    def test_build_settlement_auto(self, mock_input):
+        self.player.build_settlement(self.board, self.players, auto=True)
+        settlement = Settlement(self.player.color, 9)
+
+        assert self.board.nodes[9].occupied is True
+        assert self.board.nodes[9].building == settlement
+        assert self.board.nodes[9].color == self.player.color
+        assert self.player.resources["wood"].count == 3
+        assert self.player.resources["brick"].count == 3
+        assert self.player.resources["sheep"].count == 1
+        assert self.player.resources["wheat"].count == 1
+        assert self.player.score == 1
+        assert len(self.player.buildings.settlements) == 1
+        assert self.board.nodes[8].occupied is True
+        assert self.board.nodes[10].occupied is True
+        assert self.board.nodes[19].occupied is True
+
+    @patch("builtins.input", side_effect=[1])
+    def test_build_settlement_auto_second(self, mock_input):
+        self.board.nodes[9].occupied = True
+        self.player.build_settlement(self.board, self.players, auto=True)
+
+        assert self.board.nodes[43].occupied is True
