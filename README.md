@@ -45,7 +45,7 @@
 
 ## Introduction
 
-Currently the board/game is displayed in the command line. However in future i would like to move this either to a website of full built out UI.
+Currently the board/game is displayed in the command line. In future I would want to build out a full UI or a webapp version.
 
 ![Catan Image](./imgs/catan.png)
 
