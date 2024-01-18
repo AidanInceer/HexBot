@@ -17,10 +17,10 @@ class Board:
     Represents a game board for the game of Catan.
     """
 
-    nodes: Optional[List[Node]] = None
-    edges: Optional[List[Edge]] = None
-    harbors: Optional[List[Harbor]] = None
-    tiles: Optional[List[Tile]] = None
+    nodes: List[Node] | None = None
+    edges: List[Edge] | None = None
+    harbors: List[Harbor] | None = None
+    tiles: List[Tile] | None = None
 
     def _node(self, node_id: int) -> Node:
         """

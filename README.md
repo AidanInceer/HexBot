@@ -1,7 +1,7 @@
 # HexBot
 
   <a href="https://github.com/AidanInceer/HexBot">
-    <img alt="Static Badge" src="https://img.shields.io/badge/version-1.3.0-blue">
+    <img alt="Static Badge" src="https://img.shields.io/badge/version-1.2.0-blue">
   </a>
   <a href="https://opensource.org/licenses/MIT">
     <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg">
