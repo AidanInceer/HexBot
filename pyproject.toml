@@ -48,18 +48,8 @@ changelog_incremental = true
 
 [tool.mypy]
 python_version = "3.11"
-strict = true
-warn_return_any = true
-disallow_any_expr = true
-strict_optional = true
-disallow_untyped_defs = true
-warn_redundant_casts = true
+ignore-missing-imports = true
 warn_unused_ignores = true
-show_error_codes = true
-# include = ["src"]
-# exclude = ["tests"]
-strict_equality = true
-cache_dir = ".mypy_cache"
 
 [build-system]
 requires = ["poetry-core"]

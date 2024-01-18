@@ -58,7 +58,7 @@ class Tile:
         """
         return self.type
 
-    def value(self) -> int:
+    def value(self) -> int | None:
         """
         Get the token value of the tile.
 
