@@ -1,6 +1,6 @@
 import unittest
 
-from src.catan.resources.resources import Brick, Ore, Resources, Sheep, Wheat, Wood
+from src.catan.resources.resources import Brick, Resources
 
 
 class TestResources(unittest.TestCase):

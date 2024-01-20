@@ -18,6 +18,15 @@ class Brick:
     def __str__(self) -> str:
         return str(self.count)
 
+    def __hash__(self) -> int:
+        """
+        Returns the hash value of the Edge object.
+
+        Returns:
+            int: The hash value.
+        """
+        return hash(str(self))
+
 
 @dataclass
 class Ore:
@@ -34,6 +43,15 @@ class Ore:
 
     def __str__(self) -> str:
         return str(self.count)
+
+    def __hash__(self) -> int:
+        """
+        Returns the hash value of the Edge object.
+
+        Returns:
+            int: The hash value.
+        """
+        return hash(str(self))
 
 
 @dataclass
@@ -52,6 +70,15 @@ class Sheep:
     def __str__(self) -> str:
         return str(self.count)
 
+    def __hash__(self) -> int:
+        """
+        Returns the hash value of the Edge object.
+
+        Returns:
+            int: The hash value.
+        """
+        return hash(str(self))
+
 
 @dataclass
 class Wheat:
@@ -69,6 +96,15 @@ class Wheat:
     def __str__(self) -> str:
         return str(self.count)
 
+    def __hash__(self) -> int:
+        """
+        Returns the hash value of the Edge object.
+
+        Returns:
+            int: The hash value.
+        """
+        return hash(str(self))
+
 
 @dataclass
 class Wood:
@@ -85,6 +121,15 @@ class Wood:
 
     def __str__(self) -> str:
         return str(self.count)
+
+    def __hash__(self) -> int:
+        """
+        Returns the hash value of the Edge object.
+
+        Returns:
+            int: The hash value.
+        """
+        return hash(str(self))
 
 
 class Resources:
@@ -122,7 +167,7 @@ class Resources:
 
         return f"Resources: {resources}"
 
-    def set_attr(self, resource: Brick | Ore | Sheep | Wheat | Wood):
+    def set_attr(self, resource: Brick | Ore | Sheep | Wheat | Wood) -> None:
         """
         Increases the count of a specific resource.
 

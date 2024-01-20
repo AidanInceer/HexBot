@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import random
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List
 
 from src.catan.board.edge import Edge
 from src.catan.board.harbor import Harbor
@@ -57,6 +57,18 @@ class Board:
             Harbor: The harbor with the given ID.
         """
         return self.harbors[harbor_id]
+
+    def _tile(self, tile_id: int) -> Tile:
+        """
+        Returns the tile with the given ID.
+
+        Args:
+            tile_id (int): The ID of the tile.
+
+        Returns:
+            tile: The tile with the given ID.
+        """
+        return self.tiles[tile_id]
 
     def active_tiles(self, roll: int) -> List[Tile]:
         """
