@@ -212,3 +212,20 @@ class Resources:
             self.wheat.type,
             self.wood.type,
         ]
+
+    def total(self) -> int:
+        """
+        Returns the total number of resources.
+
+        Returns:
+            int: The total number of resources.
+        """
+        return sum(
+            [
+                self.brick.count,
+                self.ore.count,
+                self.sheep.count,
+                self.wheat.count,
+                self.wood.count,
+            ]
+        )
