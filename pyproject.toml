@@ -1,7 +1,7 @@
 [tool]
 [tool.poetry]
 name = "HexBot"
-version = "0.3.0"
+version = "1.2.0"
 description = "HexBot"
 authors = ["AidanInceer"]
 readme = "README.md"
@@ -33,7 +33,7 @@ filterwarnings = "ignore::DeprecationWarning"
 
 
 [tool.commitizen]
-version = "0.3.0"
+version = "1.2.0"
 version_files = [
     "README.md",
     "pyproject.toml:version"
