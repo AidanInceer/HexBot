@@ -178,9 +178,8 @@ class Player:
             node_id = int(input("Choose city location - [0-53]:"))
 
             # Check if there is a settlement at the node.
-            if (
-                board.nodes[node_id].occupied
-                and board.nodes[node_id].building == "settlement"
+            if board.nodes[node_id].occupied and isinstance(
+                board.nodes[node_id].building, Settlement
             ):
                 # Remove the settlement and replace it with a city at the same node.
                 self.replace_settlement(node_id=node_id)
@@ -274,8 +273,6 @@ class Player:
             lr_player[0].longest_road = False
             lr_player[0].score -= 2
             print(f"{self.color} acquired the longest road from {lr_player[0].color}.")
-        else:
-            pass
 
     def check_longest_road(
         self, board: Board, players: List[Player]
@@ -593,12 +590,12 @@ class Player:
         """
         self._dev_card = False
         while not self._dev_card:
-            choice = input("1=Collect, 2=Play, 3=End:")
-            if choice == "1":
+            choice = int(input("1=Collect, 2=Play, 3=End:"))
+            if choice == 1:
                 self.collect_dev_card(deck)
-            elif choice == "2":
+            elif choice == 2:
                 self.select_dev_card_to_play(board, players)
-            elif choice == "3":
+            elif choice == 3:
                 self._dev_card = True
 
     def collect_dev_card(self, deck: CardDeck) -> None:
