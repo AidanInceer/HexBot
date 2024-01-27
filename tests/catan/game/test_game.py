@@ -2,7 +2,9 @@ import unittest
 from unittest.mock import Mock, patch
 
 from src.catan.board.board import Board
-from src.catan.buildings.buildings import City, Settlement
+from src.catan.board.terrain import Forest
+from src.catan.board.tile import Tile
+from src.catan.buildings.buildings import City
 from src.catan.deck.deck import CardDeck
 from src.catan.game.game import Game
 from src.catan.player.player import Player
@@ -258,8 +260,12 @@ class TestGame(unittest.TestCase):
         actual = self.game.move_robber_tile()
         assert actual.id == 1
 
+    @patch(
+        "src.catan.board.board.Board.set_robber_tile",
+        return_value=Tile(id=2, robber=True, type=Forest()),
+    )
     @patch("builtins.input", side_effect=["22", "2"])
-    def test_move_robber_tile_invalid_tile(self, mock_input):
+    def test_move_robber_tile_invalid_tile(self, mock_input, mock_tile):
         actual = self.game.move_robber_tile()
         assert actual.id == 2
 
