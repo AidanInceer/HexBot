@@ -48,7 +48,6 @@ changelog_incremental = true
 
 [tool.mypy]
 python_version = "3.11"
-ignore-missing-imports = true
 warn_unused_ignores = true
 
 [build-system]
