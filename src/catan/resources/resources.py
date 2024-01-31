@@ -161,22 +161,22 @@ class Resources:
         ]
         for res in types:
             if getattr(self, res).count > 0:
-                resources.append(f"{res}: {getattr(self, res)}")
+                resources.append(str(f"{res}: {getattr(self, res)}"))
 
         resources = ", ".join(resources)
 
         return f"Resources: {resources}"
 
-    def set_attr(self, resource: Brick | Ore | Sheep | Wheat | Wood) -> None:
+    def set_attr(self, resource: str) -> None:
         """
         Increases the count of a specific resource.
 
         Args:
-            resource (Brick | Ore | Sheep | Wheat | Wood): The resource to increase the count of.
+            resource (str): The resource to increase the count of.
         """
         self[resource].count += 1
 
-    def __getitem__(self, key) -> Brick | Ore | Sheep | Wheat | Wood:
+    def __getitem__(self, key: str) -> Brick | Ore | Sheep | Wheat | Wood:
         """
         Returns the resource with the specified key.
 

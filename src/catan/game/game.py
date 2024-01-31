@@ -266,7 +266,7 @@ class Game:
 
         return able_to_steal_from
 
-    def robber_discard_resources(self):
+    def robber_discard_resources(self) -> None:
         for player in self.players:
             total = player.total_resources()
             if total > 7:
