@@ -8,6 +8,7 @@ from src.catan.deck.deck import CardDeck
 from src.catan.player.player import Player
 from src.catan.resources.resources import Brick, Ore, Sheep, Wheat, Wood
 from src.config.config import CentralConfig
+from src.interface.input_handler import InputHandler
 
 TYPES = (
     Brick,
@@ -101,14 +102,19 @@ class Game:
         )
 
         while not self.turn_ended:
-            choice = input("1=Build, 2=Trade, 3=Dev Cards(Play/Select), 4=End: ")
-            if choice == "1":
+            choice = InputHandler(
+                value_range=[1, 2, 3, 4],
+                user=player.type,
+                input_type="int",
+                message="1=Build, 2=Trade, 3=Dev Cards(Play/Select), 4=End: ",
+            ).process()
+            if choice == 1:
                 player.build(self.board, self.players, setup=False, auto=False)
-            elif choice == "2":
+            elif choice == 2:
                 player.trade(self.board, self.players)
-            elif choice == "3":
+            elif choice == 3:
                 player.dev_card(self.board, self.deck, self.players)
-            elif choice == "4":
+            elif choice == 4:
                 self.turn_ended = True
 
     def collect(self, roll: int) -> None:

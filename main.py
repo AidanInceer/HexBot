@@ -15,22 +15,10 @@ if __name__ == "__main__":
 
     game = Game(
         players=[
-            Player(
-                name=0,
-                color="Red",
-            ),
-            Player(
-                name=1,
-                color="Yellow",
-            ),
-            Player(
-                name=2,
-                color="Blue",
-            ),
-            Player(
-                name=3,
-                color="Green",
-            ),
+            Player(name=0, color="Red", type="bot"),
+            Player(name=1, color="Yellow", type="bot"),
+            Player(name=2, color="Blue", type="bot"),
+            Player(name=3, color="Green", type="bot"),
         ],
         deck=deck,
         board=board,
