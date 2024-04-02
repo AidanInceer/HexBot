@@ -17,6 +17,7 @@ from src.catan.deck.cards import (
 from src.catan.deck.deck import CardDeck
 from src.catan.game.auto_setup import setup
 from src.catan.resources.resources import Resources
+from src.interface.input_handler import InputHandler
 
 
 @dataclass
@@ -89,7 +90,12 @@ class Player:
                 self.end_building = True
 
             if not setup:
-                choice = int(input("1=Settlement, 2=City, 3=Road, 4=End: "))
+                choice = InputHandler(
+                    value_range=[1, 2, 3, 4],
+                    user=self.type,
+                    input_type="action",
+                    message="1=Settlement, 2=City, 3=Road, 4=End: ",
+                ).process()
                 if choice == 1:
                     self.build_settlement(board, players)
                 elif choice == 2:
@@ -134,7 +140,12 @@ class Player:
             and self.resources.sheep.count >= 1
             and self.resources.wheat.count >= 1
         ):
-            node_id = int(input("Choose settlement location - [0-53]:"))
+            node_id = InputHandler(
+                value_range=range(0, 53, 1),
+                user=self.type,
+                input_type="int",
+                message="Choose settlement location - [0-53]:",
+            ).process()
 
             # only build settlement if the node is not occupied and nearby nodes are not occupied.
             nearby_node_ids = board.nodes[node_id].nodes
@@ -175,7 +186,12 @@ class Player:
         # Only build city if you have 2 wheat and 3 ore.
         if self.resources.wheat.count >= 2 and self.resources.ore.count >= 3:
             # Get the node id of the city.
-            node_id = int(input("Choose city location - [0-53]:"))
+            node_id = InputHandler(
+                value_range=range(0, 53, 1),
+                user=self.type,
+                input_type="int",
+                message="Choose city location - [0-53]:",
+            ).process()
 
             # Check if there is a settlement at the node.
             if board.nodes[node_id].occupied and isinstance(
@@ -401,7 +417,12 @@ class Player:
         Returns:
             None
         """
-        edge_id = int(input("Choose road location - [0-71]:"))
+        edge_id = InputHandler(
+            value_range=range(0, 71, 1),
+            user=self.type,
+            input_type="int",
+            message="Choose road location - [0-71]: ",
+        ).process()
         nearby_edge_ids = board.edges[edge_id].edges
         nearby_node_ids = board.edges[edge_id].nodes
         nearby_edge_colors = [board.edges[edge].color for edge in nearby_edge_ids]
@@ -431,7 +452,12 @@ class Player:
         Returns:
             None
         """
-        edge_id = int(input("Choose road location - [0-71]:"))
+        edge_id = InputHandler(
+            value_range=range(0, 71, 1),
+            user=self.type,
+            input_type="int",
+            message="Choose road location - [0-71]: ",
+        ).process()
         nearby_edge_ids = board.edges[edge_id].edges
         nearby_node_ids = board.edges[edge_id].nodes
         nearby_edge_colors = [board.edges[edge].color for edge in nearby_edge_ids]
@@ -459,7 +485,12 @@ class Player:
             None
         """
         rates = self.determine_trade_rates(board)
-        trade_type = int(input("Player Trade (1), Bank/Port Trade (2), Cancel (3): "))
+        trade_type = InputHandler(
+            value_range=[1, 2, 3],
+            user=self.type,
+            input_type="int",
+            message="Player Trade (1), Bank/Port Trade (2), Cancel (3): ",
+        ).process()
 
         if trade_type == 1:
             self.player_trade(players)
@@ -504,10 +535,30 @@ class Player:
             None
         """
         print(f"{self.color} has {self.resources}")
-        resource = input("Which resource would you like to trade: ")
-        get_amount = int(input("How many would you like to trade: "))
-        receive = input("Which resource would you like to receive: ")
-        receive_amount = int(input("How many would you like to trade: "))
+        resource = InputHandler(
+            value_range=["brick", "wood", "sheep", "wheat", "ore"],
+            user=self.type,
+            input_type="resource",
+            message="Which resource would you like to trade: ",
+        ).process()
+        get_amount = InputHandler(
+            value_range=[1, 2, 3, 4],
+            user=self.type,
+            input_type="int",
+            message="How many would you like to trade: ",
+        ).process()
+        receive = InputHandler(
+            value_range=["brick", "wood", "sheep", "wheat", "ore"],
+            user=self.type,
+            input_type="resource",
+            message="Which resource would you like to trade: ",
+        ).process()
+        receive_amount = InputHandler(
+            value_range=[1, 2, 3],
+            user=self.type,
+            input_type="int",
+            message="How many would you like to trade: ",
+        ).process()
 
         traded = False
         while not traded:
