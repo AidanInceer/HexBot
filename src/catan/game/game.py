@@ -29,9 +29,6 @@ class Game:
     game_ended: bool = False
 
     def run(self) -> None:
-        """
-        Runs the game loop until the game ends.
-        """
         self.board.display()
         if self.game_type in [self.config.options.auto_types]:
             self.auto_setup()
@@ -43,9 +40,6 @@ class Game:
                 self.check_win()
 
     def auto_setup(self) -> None:
-        """
-        Automatically sets up the game by allowing each player to build their initial settlements and roads.
-        """
         for player in self.players:
             player.build(self.board, self.players, setup=True, auto=True)
 
@@ -54,10 +48,6 @@ class Game:
         self.board.display()
 
     def game_setup(self) -> None:
-        """
-        Performs the game setup phase where each player takes turns to set up their initial settlements and roads.
-        """
-
         for player in self.players:
             print(f"{player.color}'s turn to setup")
             player.build(self.board, self.players, setup=True, auto=False)
@@ -67,9 +57,6 @@ class Game:
             player.build(self.board, self.players, setup=True, auto=False)
 
     def check_win(self) -> None:
-        """
-        Checks if any player has reached a score of 10 and ends the game if so.
-        """
         for player in self.players:
             if player.score == 10:
                 self.game_ended = True
@@ -77,15 +64,6 @@ class Game:
                 break
 
     def turn(self, player: Player) -> None:
-        """
-        Executes a turn for the specified player in the game.
-
-        Args:
-            player (Player): The player whose turn it is.
-
-        Returns:
-            None
-        """
 
         self.turn_ended = False
         self.board.display()
@@ -118,15 +96,6 @@ class Game:
                 self.turn_ended = True
 
     def collect(self, roll: int) -> None:
-        """
-        Collect resources from settlements and cities on active tiles for each player.
-
-        Args:
-            roll (int): The roll of the dice.
-
-        Returns:
-            None
-        """
         for player in self.players:
             active_tiles = [
                 tile for tile in self.board.active_tiles(roll) if not tile.robber
@@ -137,16 +106,6 @@ class Game:
                 self.collect_from_cities(player, tile)
 
     def collect_from_settlements(self, player: Player, tile: Tile) -> None:
-        """
-        Collect resources from settlements on a given tile.
-
-        Args:
-            player (Player): The player collecting resources.
-            tile (Tile): The tile from which resources are collected.
-
-        Returns:
-            None
-        """
         active_nodes = [settlement.id for settlement in player.buildings.settlements]
         tile_nodes = tile.nodes
 
@@ -155,16 +114,6 @@ class Game:
             print(f"{player.color} collected {tile.type.produces}.")
 
     def collect_from_cities(self, player: Player, tile: Tile) -> None:
-        """
-        Collect resources from cities built by the player on a given tile.
-
-        Args:
-            player (Player): The player who owns the cities.
-            tile (Tile): The tile from which resources are collected.
-
-        Returns:
-            None
-        """
         active_nodes = [city.id for city in player.buildings.cities]
         tile_nodes = tile.nodes
 
@@ -173,17 +122,6 @@ class Game:
             print(f"{player.color} collected {tile.type.produces}.")
 
     def activate_robber(self, current_player: Player) -> None:
-        """
-        Activates the robber and allows the current player to move it to a different tile.
-        If there are adjacent players with resources, the current player can steal a random resource from one of them.
-        If any player has more than 7 cards, they must discard half of their resources.
-
-        Parameters:
-            current_player (Player): The current player who activated the robber.
-
-        Returns:
-            None
-        """
         # move the robber to a different tile
         new_robber_tile = self.move_robber_tile()
 

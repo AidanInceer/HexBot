@@ -11,10 +11,6 @@ from src.catan.deck.cards import (
 
 
 class CardDeck:
-    """
-    Represents a deck of development cards in the game of Catan.
-    """
-
     def __init__(
         self,
     ) -> List[Knight | Monopoly | RoadBuilding | VictoryPoint | YearOfPlenty]:
@@ -23,13 +19,6 @@ class CardDeck:
     def generate_dev_cards(
         self,
     ) -> List[Knight | Monopoly | RoadBuilding | VictoryPoint | YearOfPlenty]:
-        """
-        Generates a list of development cards and shuffles them randomly.
-
-        Returns:
-            List[List[Knight | Monopoly | RoadBuilding | VictoryPoint | YearOfPlenty]]:
-            A list of development cards.
-        """
         self.dev_cards = [
             Knight(),
             Knight(),
@@ -64,12 +53,6 @@ class CardDeck:
     def select_dev_card(
         self,
     ) -> Knight | Monopoly | RoadBuilding | VictoryPoint | YearOfPlenty | None:
-        """
-        Selects a development card from the deck.
-
-        Returns:
-            List[Knight | Monopoly | RoadBuilding | VictoryPoint | YearOfPlenty]: The selected development card.
-        """
         if len(self.dev_cards) == 0:
             return None
         selected = self.dev_cards[0]
