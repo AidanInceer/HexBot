@@ -23,7 +23,7 @@ class InputHandler:
                 user_input = int(input(f"{self.message}: "))
                 if user_input in self.value_range and isinstance(user_input, int):
                     successful_input = True
-            if self.input_type in ["resource","player","action","card"]:
+            if self.input_type in ["resource", "player", "action", "card"]:
                 user_input = input(f"{self.message}: ")
                 if user_input in self.value_range and isinstance(user_input, str):
                     successful_input = True

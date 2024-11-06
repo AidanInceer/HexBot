@@ -1,16 +1,16 @@
+import time
+
 from src.catan.board.board import Board
 from src.catan.deck.deck import CardDeck
 from src.catan.game.game import Game
 from src.catan.player.player import Player
 from src.config.config import load_config
 from src.utils.handlers import PathHandler
-import time
-
 
 if __name__ == "__main__":
     start_time = time.time()
     runs = 3
-    for i in range(0,runs,1):
+    for i in range(0, runs, 1):
         config = load_config(PathHandler.config_path)
 
         deck = CardDeck().generate_dev_cards()

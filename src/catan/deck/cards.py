@@ -3,7 +3,6 @@ from dataclasses import dataclass
 
 @dataclass
 class Knight:
-
     color: str | None = None
     played: bool = False
     player: str | None = None
@@ -17,7 +16,6 @@ class Knight:
 
 @dataclass
 class VictoryPoint:
-
     color: str | None = None
     played: bool = False
     player: str | None = None
@@ -31,7 +29,6 @@ class VictoryPoint:
 
 @dataclass
 class Monopoly:
-
     color: str | None = None
     played: bool = False
     player: str | None = None
@@ -45,7 +42,6 @@ class Monopoly:
 
 @dataclass
 class RoadBuilding:
-
     color: str | None = None
     played: bool = False
     player: str | None = None
@@ -59,7 +55,6 @@ class RoadBuilding:
 
 @dataclass
 class YearOfPlenty:
-
     color: str | None = None
     played: bool = False
     player: str | None = None

@@ -118,11 +118,9 @@ class Resources:
         return f"Resources: {resources}"
 
     def set_attr(self, resource: str) -> None:
-
         self[resource].count += 1
 
     def __getitem__(self, key: str) -> Brick | Ore | Sheep | Wheat | Wood:
-
         return self.__dict__.get(key)
 
     def __setitem__(self, key, value) -> None:
@@ -147,7 +145,7 @@ class Resources:
                 self.wood.count,
             ]
         )
-    
+
     def unique_available_resources(self) -> List[str]:
         output = []
         for _ in range(self.brick.count):
@@ -160,5 +158,5 @@ class Resources:
             output.append("wheat")
         for _ in range(self.wood.count):
             output.append("wood")
-        
+
         return list(set(output))

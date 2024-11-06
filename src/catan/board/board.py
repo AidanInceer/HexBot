@@ -42,9 +42,8 @@ class Board:
         for tile in self.tiles:
             if tile.robber:
                 return tile
-            
-    def available_nodes(self, player: str) -> List[int]:
 
+    def available_nodes(self, player: str) -> List[int]:
         player_nodes = [node for node in self.nodes if node.color == player]
 
         available_nodes = []
@@ -56,9 +55,8 @@ class Board:
                     available_nodes.append(node.id)
 
         return available_nodes
-    
+
     def available_edges(self, player: str) -> List[int]:
-        
         player_edges = [edge for edge in self.edges if edge.color == player]
 
         available_edges = []

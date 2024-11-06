@@ -4,21 +4,18 @@ from typing import List
 
 @dataclass
 class Settlement:
-
     color: str
     id: int
 
 
 @dataclass
 class City:
-
     color: str
     id: int
 
 
 @dataclass
 class Road:
-
     color: str
     id: int
 
