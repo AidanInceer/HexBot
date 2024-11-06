@@ -9,6 +9,7 @@ from src.catan.player.player import Player
 from src.catan.resources.resources import Brick, Ore, Sheep, Wheat, Wood
 from src.config.config import CentralConfig
 from src.interface.input_handler import InputHandler
+from colorama import Fore
 
 TYPES = (
     Brick,
@@ -30,7 +31,7 @@ class Game:
 
     def run(self) -> None:
         self.board.display()
-        if self.game_type in [self.config.options.auto_types]:
+        if self.game_type in self.config.options.auto_types:
             self.auto_setup()
         else:
             self.game_setup()
@@ -58,9 +59,12 @@ class Game:
 
     def check_win(self) -> None:
         for player in self.players:
-            if player.score == 10:
+            if player.score >= 10:
                 self.game_ended = True
                 print(f"{player.color} won!")
+
+                for player in self.players:
+                    print(f"{player.color} had {player.score} points at the end of the game")
                 break
 
     def turn(self, player: Player) -> None:
@@ -74,10 +78,15 @@ class Game:
 
         self.collect(roll)
 
-        print(
-            f"{player.color}'s turn   Score: {player.score} LR:{player.longest_road} LA:{player.largest_army}  Cards: {player.cards}   {player.resources}  \n"
-            "==========================================================================================="
-        )
+        if player.color == "Red":
+            print(f"{Fore.RED + f"{player.color}'s turn   Score: {player.score} LR:{player.longest_road} LA:{player.largest_army}  Cards: {player.cards}   {player.resources}  \n===========================================================================================" + Fore.RESET}")
+        elif player.color == "Blue":
+            print(f"{Fore.BLUE + f"{player.color}'s turn   Score: {player.score} LR:{player.longest_road} LA:{player.largest_army}  Cards: {player.cards}   {player.resources}  \n===========================================================================================" + Fore.RESET}")
+        elif player.color == "Green":
+            print(f"{Fore.GREEN + f"{player.color}'s turn   Score: {player.score} LR:{player.longest_road} LA:{player.largest_army}  Cards: {player.cards}   {player.resources}  \n===========================================================================================" + Fore.RESET}")
+        elif player.color == "Yellow":
+            print(f"{Fore.YELLOW + f"{player.color}'s turn   Score: {player.score} LR:{player.longest_road} LA:{player.largest_army}  Cards: {player.cards}   {player.resources}  \n===========================================================================================" + Fore.RESET}")
+
 
         while not self.turn_ended:
             choice = InputHandler(
@@ -91,7 +100,7 @@ class Game:
             elif choice == 2:
                 player.trade(self.board, self.players)
             elif choice == 3:
-                player.dev_card(self.board, self.deck, self.players)
+                player.dev_card(self.board, self.players,self.deck)
             elif choice == 4:
                 self.turn_ended = True
 
@@ -123,7 +132,7 @@ class Game:
 
     def activate_robber(self, current_player: Player) -> None:
         # move the robber to a different tile
-        new_robber_tile = self.move_robber_tile()
+        new_robber_tile = self.move_robber_tile(current_player)
 
         # choose a player to steal a random resource from
         # if the player has no resources, they are skipped
@@ -132,18 +141,24 @@ class Game:
         )
 
         if able_to_steal_from:
-            robbed_player = self.select_player_to_steal_from(able_to_steal_from)
+            robbed_player = self.select_player_to_steal_from(current_player, able_to_steal_from)
             if robbed_player:
                 self.steal_random_resource(robbed_player, current_player)
 
         # if any player has more than 7 cards, they must discard half
         self.robber_discard_resources()
 
-    def move_robber_tile(self) -> Tile:
+    def move_robber_tile(self, player) -> Tile:
         robber_tile = self.board.get_robber_tile()
         robber_moved = False
+
         while not robber_moved:
-            move_robber = int(input("Choosen a Tile [0-18] to move the Robber to: "))
+            move_robber = InputHandler(
+                value_range=range(0, 18, 1),
+                user=player.type,
+                input_type="int",
+                message="Choosen a Tile [0-18] to move the Robber to: ",
+            ).process()
             if move_robber < 0 or move_robber > 18:
                 print("Invalid tile.")
             elif move_robber == robber_tile.id:
@@ -156,8 +171,13 @@ class Game:
 
         return new_robber_tile
 
-    def select_player_to_steal_from(self, able_to_steal_from: set) -> Player:
-        select_player = input(f"Choosen a player to steal from {able_to_steal_from}: ")
+    def select_player_to_steal_from(self,player, able_to_steal_from: set) -> Player:
+        select_player = InputHandler(
+                value_range=list(able_to_steal_from),
+                user=player.type,
+                input_type="player",
+                message=f"Choose a player to steal from {able_to_steal_from}: ",
+                ).process()
 
         robbed_player = [
             player

@@ -45,14 +45,14 @@ class Player:
         self.end_building = False
         while not self.end_building:
             if setup and auto:
-                self.build_settlement(board, players, auto=True)
-                self.build_road(board, players, auto=True)
+                self.build_settlement(board, players,locations = list(range(0,53,1)), auto=True,)
+                self.build_road(board, players,locations = list(range(0,71,1)), auto=True)
                 self.end_building = True
 
             if setup and not auto:
-                self.build_settlement(board, players)
+                self.build_settlement(board, players,locations = list(range(0,53,1)))
                 board.display()
-                self.build_road(board, players)
+                self.build_road(board, players,locations = list(range(0,71,1)))
                 board.display()
                 self.end_building = True
 
@@ -60,21 +60,23 @@ class Player:
                 choice = InputHandler(
                     value_range=[1, 2, 3, 4],
                     user=self.type,
-                    input_type="action",
+                    input_type="int",
                     message="1=Settlement, 2=City, 3=Road, 4=End: ",
                 ).process()
                 if choice == 1:
-                    self.build_settlement(board, players)
+                    self.build_settlement(board, players,locations = board.available_nodes(self.color))
                 elif choice == 2:
-                    self.build_city(board, players)
+                    self.build_city(board, players,locations = board.available_nodes(self.color))
                 elif choice == 3:
-                    self.build_road(board, players)
+                    self.build_road(board, players,locations = board.available_edges(self.color))
                 elif choice == 4:
                     self.end_building = True
 
     def build_settlement(
-        self, board: Board, players: List[Player], auto: bool = False
+        self, board: Board, players: List[Player], locations: list, auto: bool = False,
     ) -> None:
+        
+
         if auto:
             node_id = setup[self.name][0]["settlement"]
             if board.nodes[node_id].occupied:
@@ -92,6 +94,10 @@ class Player:
             board.nodes[node_id].color = self.color
             for node in board.nodes[node_id].nodes:
                 board.nodes[node].occupied = True
+        
+        elif len(locations)==0:
+            print("No more valid build nodes available")
+            self.build(board, players)
 
         elif (
             self.resources.brick.count >= 1
@@ -99,8 +105,9 @@ class Player:
             and self.resources.sheep.count >= 1
             and self.resources.wheat.count >= 1
         ):
+            
             node_id = InputHandler(
-                value_range=range(0, 53, 1),
+                value_range=locations,
                 user=self.type,
                 input_type="int",
                 message="Choose settlement location - [0-53]:",
@@ -125,18 +132,22 @@ class Player:
                     board.nodes[node].occupied = True
             else:
                 print("Invalid location, select a build option again.")
-                self.build_settlement(board, players)
+                locations.remove(node_id)
+                self.build_settlement(board, players,locations)
 
         else:
             print("Not enough resources to build a settlement, please choose again")
             self.build(board, players)
 
-    def build_city(self, board: Board, players: List[Player]) -> None:
+    def build_city(self, board: Board, players: List[Player], locations: List) -> None:
         # Only build city if you have 2 wheat and 3 ore.
-        if self.resources.wheat.count >= 2 and self.resources.ore.count >= 3:
+        if len(locations)==0:
+            print("No more valid build nodes available")
+            self.build(board, players)
+        elif self.resources.wheat.count >= 2 and self.resources.ore.count >= 3:
             # Get the node id of the city.
             node_id = InputHandler(
-                value_range=range(0, 53, 1),
+                value_range=locations,
                 user=self.type,
                 input_type="int",
                 message="Choose city location - [0-53]:",
@@ -162,7 +173,8 @@ class Player:
                     board.nodes[node].occupied = True
             else:
                 print("Invalid location, select a build option again.")
-                self.build_city(board, players)
+                locations.remove(node_id)
+                self.build_city(board, players,locations)
         else:
             print("Not enough resources to build a city, please choose again")
             self.build(board, players)
@@ -177,16 +189,19 @@ class Player:
         self,
         board: Board,
         players: List[Player],
+        locations: List,
         dev_card: bool = False,
         auto: bool = False,
     ) -> None:
         if auto:
             self.auto_build_road(board)
 
+        elif len(locations)== 0:
+            print("No more valid build nodes")
         elif self.resources.brick.count >= 1 and self.resources.wood.count >= 1:
-            self.build_road_default(board, players)
+            self.build_road_default(board, players, locations)
         elif dev_card:
-            self.build_road_dev_card(board, players)
+            self.build_road_dev_card(board, players, locations)
         else:
             print("Not enough resources to build a road, please choose again")
             self.build(board, players)
@@ -282,9 +297,9 @@ class Player:
         board.edges[edge_id].occupied = True
         board.edges[edge_id].color = self.color
 
-    def build_road_default(self, board: Board, players: List[Player]) -> None:
+    def build_road_default(self, board: Board, players: List[Player], locations:list) -> None:
         edge_id = InputHandler(
-            value_range=range(0, 71, 1),
+            value_range=locations,
             user=self.type,
             input_type="int",
             message="Choose road location - [0-71]: ",
@@ -304,12 +319,13 @@ class Player:
             board.edges[edge_id].occupied = True
             board.edges[edge_id].color = self.color
         else:
+            locations.remove(edge_id)
             print("Invalid location, select a build option again.")
-            self.build_road(board, players)
+            self.build_road(board, players, locations)
 
-    def build_road_dev_card(self, board: Board, players: List[Player]) -> None:
+    def build_road_dev_card(self, board: Board, players: List[Player], locations:list) -> None:
         edge_id = InputHandler(
-            value_range=range(0, 71, 1),
+            value_range=locations,
             user=self.type,
             input_type="int",
             message="Choose road location - [0-71]: ",
@@ -326,8 +342,9 @@ class Player:
             board.edges[edge_id].occupied = True
             board.edges[edge_id].color = self.color
         else:
+            locations.remove(edge_id)
             print("Invalid location, select a build option again.")
-            self.build_road(board, players, dev_card=True)
+            self.build_road(board, players, locations)
 
     def trade(self, board: Board, players: List[Player]) -> None:
         rates = self.determine_trade_rates(board)
@@ -348,9 +365,20 @@ class Player:
     def bank_port_trade(
         self, rates: Dict[str, int], board: Board, players: List[Player]
     ) -> None:
-        resource = input("Which resource would you like to trade: ")
-        receive = input("Which resource would you like to receive: ")
+        
+        resource = InputHandler(
+            value_range=["brick", "wood", "sheep", "wheat", "ore"],
+            user=self.type,
+            input_type="resource",
+            message="Which resource would you like to trade (give away): ",
+        ).process()
 
+        receive = InputHandler(
+            value_range=["brick", "wood", "sheep", "wheat", "ore"],
+            user=self.type,
+            input_type="resource",
+            message="Which resource would you like to receive: ",
+        ).process()
         if self.resources[resource].count >= rates[resource]:
             self.resources[resource].count -= rates[resource]
             self.resources[receive].count += 1
@@ -365,7 +393,7 @@ class Player:
             value_range=["brick", "wood", "sheep", "wheat", "ore"],
             user=self.type,
             input_type="resource",
-            message="Which resource would you like to trade: ",
+            message="Which resource would you like to trade (give away): ",
         ).process()
         get_amount = InputHandler(
             value_range=[1, 2, 3, 4],
@@ -393,9 +421,12 @@ class Player:
                     player.color != self.color
                     and player.resources[resource].count >= receive_amount
                 ):
-                    player_accept = input(
-                        f"{player.color} would you like to trade {resource} for {receive} [Y/N]: "
-                    ).upper()
+                    player_accept = InputHandler(
+                            value_range=["Y","N"],
+                            user=self.type,
+                            input_type="action",
+                            message=f"{player.color} would you like to trade {resource} for {receive} [Y/N]: ",
+                        ).process()
                     if player_accept == "Y":
                         player.resources[resource].count -= receive_amount
                         player.resources[receive].count += get_amount
@@ -407,6 +438,7 @@ class Player:
                         print(f"{player.color} declined trade.")
                 else:
                     print("Player does not have enough resources to trade.")
+                    traded = True
         print(f"{self.color} has {self.resources}")
 
     def determine_trade_rates(self, board: Board) -> Dict[str, int]:
@@ -448,7 +480,12 @@ class Player:
     def dev_card(self, board: Board, players: List[Player], deck: CardDeck) -> None:
         self._dev_card = False
         while not self._dev_card:
-            choice = int(input("1=Collect, 2=Play, 3=End:"))
+            choice = InputHandler(
+                value_range=[1,2,3],
+                user=self.type,
+                input_type="int",
+                message="1=Collect, 2=Play, 3=End:",
+                ).process()
             if choice == 1:
                 self.collect_dev_card(deck)
             elif choice == 2:
@@ -465,14 +502,22 @@ class Player:
             self.resources.sheep.count -= 1
             self.resources.wheat.count -= 1
             self.resources.ore.count -= 1
-
-            card = deck.select_dev_card()
-            self.cards.append(card)
-            print(f"Player {self.color} collected a {card.__class__.__name__} card.")
+            if len(deck)==0:
+                print("no more dev cards available.")
+            else:
+                card = deck[0]
+                deck.pop(0)
+                self.cards.append(card)
+                print(f"Player {self.color} collected a {card.__class__.__name__} card.")
 
     def select_dev_card_to_play(self, board: Board, players: List[Player]) -> None:
         if len(self.cards) > 0:
-            chosen = input("Which dev card would you like to play: ")
+            chosen = InputHandler(
+                value_range=self.cards,
+                user=self.type,
+                input_type="card",
+                message=f"Which dev card would you like to play from - {list(self.cards)}: ",
+                ).process()
             card_types = [
                 ("knight", Knight),
                 ("victory_point", VictoryPoint),
@@ -519,7 +564,12 @@ class Player:
 
         robber_moved = False
         while not robber_moved:
-            move_robber = int(input("Choosen a Tile [0-18] to move the Robber to: "))
+            move_robber = InputHandler(
+                value_range=range(0,18,1),
+                user=self.type,
+                input_type="int",
+                message="Choosen a Tile [0-18] to move the Robber to: ",
+                ).process()
             if move_robber == robber_tile.id:
                 print("Robber must be moved to a different tile.")
             else:
@@ -544,9 +594,12 @@ class Player:
             print("No players to steal from.")
 
         else:
-            select_player = input(
-                f"Choosen a player to steal from {able_to_steal_from}: "
-            )
+            select_player = InputHandler(
+                value_range=list(able_to_steal_from),
+                user=self.type,
+                input_type="player",
+                message=f"Choose a player to steal from {able_to_steal_from}: ",
+                ).process()
 
             robbed_player = [
                 player
@@ -603,7 +656,13 @@ class Player:
         print(f"Player {self.color} played a Victory Point card.")
 
     def play_monopoly(self, players: List[Player]) -> None:
-        resource = input("Which resource would you like to monopolize: ")
+
+        resource = InputHandler(
+                value_range=["brick","ore","sheep","wheat","wood"],
+                user=self.type,
+                input_type="resource",
+                message="Which resource would you like to monopolize: ",
+                ).process()
         for player in players:
             if player.color != self.color:
                 self.resources[resource].count += player.resources[resource].count
@@ -611,13 +670,23 @@ class Player:
 
     def play_road_building(self, board: Board, players: List[Player]) -> None:
         print("Played Road Building")
-        self.build_road(board, players=players, dev_card=True)
-        self.build_road(board, players=players, dev_card=True)
+        self.build_road(board, players=players,locations =board.available_edges(self.color), dev_card=True)
+        self.build_road(board, players=players,locations =board.available_edges(self.color), dev_card=True)
 
     def play_year_of_plenty(self) -> None:
-        resource = input("Which resource would you like to collect: ")
+        resource = InputHandler(
+                value_range=["brick","ore","sheep","wheat","wood"],
+                user=self.type,
+                input_type="resource",
+                message="Which resource would you like to collect: ",
+                ).process()
         self.resources[resource].count += 1
-        resource = input("Which resource would you like to collect: ")
+        resource = InputHandler(
+                value_range=["brick","ore","sheep","wheat","wood"],
+                user=self.type,
+                input_type="resource",
+                message="Which resource would you like to collect: ",
+                ).process()
         self.resources[resource].count += 1
 
     def total_resources(self) -> int:
@@ -634,9 +703,12 @@ class Player:
 
         while discard_amount > 0:
             print(f"Player {self.color} has {self.resources}")
-            discard = input(
-                "Which resource would you like to discard: brick, wood, sheep, wheat, ore: "
-            )
+            discard = InputHandler(
+                value_range=self.resources.unique_available_resources(),
+                user=self.type,
+                input_type="resource",
+                message="Which resource would you like to discard: brick, wood, sheep, wheat, ore: ",
+                ).process()
             if discard not in self.resources.all_resources():
                 print("Invalid resource, please choose again.")
             elif self.resources[discard].count > 0:

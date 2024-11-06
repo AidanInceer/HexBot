@@ -335,7 +335,7 @@ edge_mapping = {
     6: {"adjacent_nodes": [0, 8], "adjacent_edges": [0, 10, 11]},
     7: {"adjacent_nodes": [2, 10], "adjacent_edges": [1, 2, 12, 13]},
     8: {"adjacent_nodes": [4, 12], "adjacent_edges": [3, 4, 14, 15]},
-    9: {"adjacent_nodes": [6, 14], "adjacent_edges": [5, 15, 16]},
+    9: {"adjacent_nodes": [6, 14], "adjacent_edges": [5, 16, 17]},
     10: {"adjacent_nodes": [7, 8], "adjacent_edges": [6, 11, 18]},
     11: {"adjacent_nodes": [8, 9], "adjacent_edges": [6, 10, 12, 19]},
     12: {"adjacent_nodes": [9, 10], "adjacent_edges": [7, 11, 13, 19]},

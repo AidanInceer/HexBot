@@ -42,6 +42,34 @@ class Board:
         for tile in self.tiles:
             if tile.robber:
                 return tile
+            
+    def available_nodes(self, player: str) -> List[int]:
+
+        player_nodes = [node for node in self.nodes if node.color == player]
+
+        available_nodes = []
+
+        for node in player_nodes:
+            for adj_node_id in node.nodes:
+                node = self.nodes[adj_node_id]
+                if node.occupied == False:
+                    available_nodes.append(node.id)
+
+        return available_nodes
+    
+    def available_edges(self, player: str) -> List[int]:
+        
+        player_edges = [edge for edge in self.edges if edge.color == player]
+
+        available_edges = []
+
+        for edge in player_edges:
+            for adj_edge_id in edge.edges:
+                edge = self.edges[adj_edge_id]
+                if edge.occupied == False:
+                    available_edges.append(edge.id)
+
+        return available_edges
 
     def generate(self) -> None:
         self.nodes = self.generate_nodes()

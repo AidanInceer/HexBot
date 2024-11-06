@@ -147,3 +147,18 @@ class Resources:
                 self.wood.count,
             ]
         )
+    
+    def unique_available_resources(self) -> List[str]:
+        output = []
+        for _ in range(self.brick.count):
+            output.append("brick")
+        for _ in range(self.ore.count):
+            output.append("ore")
+        for _ in range(self.sheep.count):
+            output.append("sheep")
+        for _ in range(self.wheat.count):
+            output.append("wheat")
+        for _ in range(self.wood.count):
+            output.append("wood")
+        
+        return list(set(output))
