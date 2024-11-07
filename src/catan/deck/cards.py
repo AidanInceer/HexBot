@@ -6,6 +6,7 @@ class Knight:
     color: str | None = None
     played: bool = False
     player: str | None = None
+    name: str = "knight"
 
     def __getitem__(self, key):
         return self.__dict__.get(key)
@@ -19,6 +20,7 @@ class VictoryPoint:
     color: str | None = None
     played: bool = False
     player: str | None = None
+    name: str = "victory_point"
 
     def __getitem__(self, key):
         return self.__dict__.get(key)
@@ -32,6 +34,7 @@ class Monopoly:
     color: str | None = None
     played: bool = False
     player: str | None = None
+    name: str = "monopoly"
 
     def __getitem__(self, key):
         return self.__dict__.get(key)
@@ -45,6 +48,7 @@ class RoadBuilding:
     color: str | None = None
     played: bool = False
     player: str | None = None
+    name: str = "road_building"
 
     def __getitem__(self, key):
         return self.__dict__.get(key)
@@ -58,6 +62,7 @@ class YearOfPlenty:
     color: str | None = None
     played: bool = False
     player: str | None = None
+    name: str = "year_of_plenty"
 
     def __getitem__(self, key):
         return self.__dict__.get(key)

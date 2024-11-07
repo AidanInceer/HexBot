@@ -9,6 +9,7 @@ from src.catan.board.harbor import Harbor
 from src.catan.board.node import Node
 from src.catan.board.terrain import Desert, Fields, Forest, Hills, Mountains, Pasture
 from src.catan.board.tile import Tile
+from src.catan.buildings.buildings import Settlement
 
 
 @dataclass
@@ -44,17 +45,43 @@ class Board:
                 return tile
 
     def available_nodes(self, player: str) -> List[int]:
-        player_nodes = [node for node in self.nodes if node.color == player]
+        player_edges = [edge for edge in self.edges if edge.color == player]
+
+        player_adj_nodes = []
+        for edge in player_edges:
+            for node_id in edge.near_nodes():
+                player_adj_nodes.append(node_id)
+
+        player_adj_nodes = list(set(player_adj_nodes))
 
         available_nodes = []
-
-        for node in player_nodes:
-            for adj_node_id in node.nodes:
-                node = self.nodes[adj_node_id]
-                if node.occupied == False:
-                    available_nodes.append(node.id)
-
+        for node_id in player_adj_nodes:
+            adj_node_occupied_by_other_color = any(
+                [
+                    self.nodes[adj_node_id].color not in [player, None]
+                    for adj_node_id in self.nodes[node_id].nodes
+                ]
+            )
+            if (
+                not self._node(node_id).building
+                and not adj_node_occupied_by_other_color
+            ):
+                available_nodes.append(node_id)
         return available_nodes
+
+    def available_nodes_city(self, player: str) -> List[int]:
+        print(
+            [
+                node.id
+                for node in self.nodes
+                if node.color == player and isinstance(node.building, Settlement)
+            ]
+        )
+        return [
+            node.id
+            for node in self.nodes
+            if node.color == player and isinstance(node.building, Settlement)
+        ]
 
     def available_edges(self, player: str) -> List[int]:
         player_edges = [edge for edge in self.edges if edge.color == player]
@@ -64,10 +91,20 @@ class Board:
         for edge in player_edges:
             for adj_edge_id in edge.edges:
                 edge = self.edges[adj_edge_id]
-                if edge.occupied == False:
+                if edge.occupied is False:
                     available_edges.append(edge.id)
-
         return available_edges
+
+    def available_start_edges(self, player: str) -> List[int]:
+
+        starting_edges = []
+        starting_nodes = [node for node in self.nodes if node.color == player]
+        for node in starting_nodes:
+            occupied = [True for edge in node.edges if self.edges[edge].occupied]
+            if not occupied:
+                [starting_edges.append(edge) for edge in node.edges]
+        print([node.id for node in starting_nodes])
+        return starting_edges
 
     def generate(self) -> None:
         self.nodes = self.generate_nodes()

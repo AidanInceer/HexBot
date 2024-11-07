@@ -52,14 +52,20 @@ class Player:
                     auto=True,
                 )
                 self.build_road(
-                    board, players, locations=list(range(0, 71, 1)), auto=True
+                    board,
+                    players,
+                    locations=board.available_start_edges(self.color),
+                    auto=True,
                 )
                 self.end_building = True
 
             if setup and not auto:
                 self.build_settlement(board, players, locations=list(range(0, 53, 1)))
                 board.display()
-                self.build_road(board, players, locations=list(range(0, 71, 1)))
+
+                self.build_road(
+                    board, players, locations=board.available_start_edges(self.color)
+                )
                 board.display()
                 self.end_building = True
 
@@ -76,7 +82,7 @@ class Player:
                     )
                 elif choice == 2:
                     self.build_city(
-                        board, players, locations=board.available_nodes(self.color)
+                        board, players, locations=board.available_nodes_city(self.color)
                     )
                 elif choice == 3:
                     self.build_road(
@@ -97,6 +103,7 @@ class Player:
             if board.nodes[node_id].occupied:
                 node_id = setup[self.name][1]["settlement"]
 
+            print(f"Player {self.color} built a settlement at location {node_id}")
             settlement = Settlement(self.color, node_id)
             self.resources.brick.count -= 1
             self.resources.wood.count -= 1
@@ -131,6 +138,7 @@ class Player:
             nearby_node_ids = board.nodes[node_id].nodes
             nearby_nodes = [board.nodes[node].occupied for node in nearby_node_ids]
             if board.nodes[node_id].occupied is False and all(nearby_nodes) is False:
+                print(f"Player {self.color} built a settlement at location {node_id}")
                 # update the board to show the settlement, set nearby nodes to occupied
                 settlement = Settlement(self.color, node_id)
                 self.resources.brick.count -= 1
@@ -145,7 +153,7 @@ class Player:
                 for node in board.nodes[node_id].nodes:
                     board.nodes[node].occupied = True
             else:
-                print("Invalid location, select a build option again.")
+                print(f"Invalid location {node_id}, select a build option again.")
                 locations.remove(node_id)
                 self.build_settlement(board, players, locations)
 
@@ -176,6 +184,8 @@ class Player:
 
                 # Update the board to show the city, set nearby nodes to occupied
                 city = City(self.color, node_id)
+                print(f"Player {self.color} built a city at location {node_id}")
+
                 self.resources.wheat.count -= 2
                 self.resources.ore.count -= 3
                 self.score += 2
@@ -186,7 +196,7 @@ class Player:
                 for node in board.nodes[node_id].nodes:
                     board.nodes[node].occupied = True
             else:
-                print("Invalid location, select a build option again.")
+                print(f"Invalid location {node_id}, select a build option again.")
                 locations.remove(node_id)
                 self.build_city(board, players, locations)
         else:
@@ -304,6 +314,7 @@ class Player:
             edge_id = setup[self.name][1]["road"]
 
         road = Road(self.color, edge_id)
+        print(f"Player {self.color} built a road at location {edge_id}")
         self.resources.brick.count -= 1
         self.resources.wood.count -= 1
 
@@ -328,6 +339,7 @@ class Player:
             nearby_edge_colors + nearby_nodes_colors
         ):
             road = Road(self.color, edge_id)
+            print(f"Player {self.color} built a road at location {edge_id}")
             self.resources.brick.count -= 1
             self.resources.wood.count -= 1
 
@@ -336,7 +348,7 @@ class Player:
             board.edges[edge_id].color = self.color
         else:
             locations.remove(edge_id)
-            print("Invalid location, select a build option again.")
+            print(f"Invalid location {edge_id}, select a build option again.")
             self.build_road(board, players, locations)
 
     def build_road_dev_card(
@@ -356,12 +368,13 @@ class Player:
             nearby_edge_colors + nearby_nodes_colors
         ):
             road = Road(self.color, edge_id)
+            print(f"Player {self.color} built a road at location {edge_id}")
             self.buildings.roads.append(road)
             board.edges[edge_id].occupied = True
             board.edges[edge_id].color = self.color
         else:
             locations.remove(edge_id)
-            print("Invalid location, select a build option again.")
+            print(f"Invalid location {edge_id}, select a build option again.")
             self.build_road(board, players, locations)
 
     def trade(self, board: Board, players: List[Player]) -> None:
@@ -530,25 +543,24 @@ class Player:
                 )
 
     def select_dev_card_to_play(self, board: Board, players: List[Player]) -> None:
-        if len(self.cards) > 0:
+        inputs = [card.name for card in self.cards if card.played is False]
+        if len(inputs) > 0:
             chosen = InputHandler(
-                value_range=self.cards,
+                value_range=inputs,
                 user=self.type,
                 input_type="card",
                 message=f"Which dev card would you like to play from - {list(self.cards)}: ",
             ).process()
-            card_types = [
-                ("knight", Knight),
-                ("victory_point", VictoryPoint),
-                ("monopoly", Monopoly),
-                ("road_building", RoadBuilding),
-                ("year_of_plenty", YearOfPlenty),
+            selected_cards = [
+                card
+                for card in self.cards
+                if card.name == chosen and card.played is False
             ]
-            for card_type in card_types:
-                if chosen == card_type[0]:
-                    for card in self.cards:
-                        if isinstance(card, card_type[1]):
-                            self.play_dev_card(card, board, players)
+            if len(selected_cards) > 0:
+                card = selected_cards[0]
+                self.play_dev_card(card, board, players)
+            else:
+                self.select_dev_card_to_play(board, players)
 
     def play_dev_card(
         self,
@@ -567,7 +579,7 @@ class Player:
         elif isinstance(card, YearOfPlenty):
             self.play_year_of_plenty()
 
-        self.cards.remove(card)
+        card.played = True
         self._dev_card = True
 
         return None
