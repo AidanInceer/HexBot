@@ -8,8 +8,9 @@ from src.catan.board.edge import Edge
 from src.catan.board.harbor import Harbor
 from src.catan.board.node import Node
 from src.catan.board.terrain import Desert, Fields, Forest, Hills, Mountains, Pasture
-from src.catan.board.tile import Tile
+from src.catan.board.tile import Tile   
 
+from src.catan.buildings.buildings import Settlement
 
 @dataclass
 class Board:
@@ -208,6 +209,83 @@ class Board:
                 tile.token = random.choice(tokens)
                 tokens.remove(tile.token)
         return self.tiles
+        
+    def fetch_best_available_node(self, building_type: str = "settlement", player_color: str = None) -> List[tuple]:
+        """
+        Returns the top 3 best available nodes to build on, sorted by probability.
+        
+        Args:
+            building_type (str): Type of building to check for ("settlement" or "city")
+            player_color (str): Color of the player (required for city placement)
+        
+        Returns:
+            List[tuple]: List of tuples (node_id, probability) for the top 3 nodes,
+                        sorted in descending order by probability.
+        """
+        probability_map = {
+            2: 1,
+            3: 2,
+            4: 3,
+            5: 4,
+            6: 5,
+            8: 5,
+            9: 4,
+            10: 3,
+            11: 2,
+            12: 1
+        }
+
+        best_nodes = []
+
+        for node in self.nodes:
+            # For settlements: check if node is unoccupied
+            # For cities: check if node has player's settlement
+            if building_type == "settlement":
+                valid_location = not node.occupied
+            else:  # city
+                valid_location = (
+                    node.occupied 
+                    and node.color == player_color 
+                    and isinstance(node.building, Settlement)
+                )
+
+            if valid_location:
+                tile_ids = node.near_tiles()
+                tile_tokens = [self.tiles[tile_id].token for tile_id in tile_ids if self.tiles[tile_id].token is not None]
+                mapped_tokens = [probability_map[token] for token in tile_tokens]
+                total_probability = sum(mapped_tokens)
+                best_nodes.append((node.id, total_probability))
+
+        # Sort nodes by probability in descending order and return top 3
+        best_nodes.sort(key=lambda x: x[1], reverse=True)
+        best_nodes = [node[0] for node in best_nodes[:3]]
+        return best_nodes
+
+    def fetch_best_available_edge(self, player_color: str, dev_card: bool = False) -> List[int]:
+        """
+        Returns the best available edges to build roads on.
+        
+        Args:
+            player_color (str): Color of the player
+            dev_card (bool): Whether this is being called for a development card road (ignores resource costs)
+        
+        Returns:
+            List[int]: List of valid edge IDs for road placement
+        """
+        valid_edges = []
+        
+        for edge in self.edges:
+            if not edge.occupied:
+                nearby_edge_ids = edge.edges
+                nearby_node_ids = edge.nodes
+                nearby_edge_colors = [self.edges[e].color for e in nearby_edge_ids]
+                nearby_nodes_colors = [self.nodes[n].color for n in nearby_node_ids]
+                
+                # Valid if connected to player's existing road or settlement/city
+                if player_color in (nearby_edge_colors + nearby_nodes_colors):
+                    valid_edges.append(edge.id)
+    
+        return valid_edges if valid_edges else []
 
     def display(self) -> None:
         """

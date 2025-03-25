@@ -4,7 +4,7 @@ from src.catan.board.tile import Tile
 from src.catan.buildings.buildings import City, Settlement
 from src.catan.player.player import Player
 from src.catan.resources.resources import Brick, Ore, Sheep, Wheat, Wood
-
+from src.interface.input_handler import InputHandler
 TYPES = (
     Brick,
     Ore,
@@ -43,7 +43,7 @@ class RobberManager:
             None
         """
         # move the robber to a different tile
-        new_robber_tile = self.move_robber_tile()
+        new_robber_tile = self.move_robber_tile(current_player)
 
         # choose a player to steal a random resource from
         # if the player has no resources, they are skipped
@@ -52,14 +52,14 @@ class RobberManager:
         )
 
         if able_to_steal_from:
-            robbed_player = self.select_player_to_steal_from(able_to_steal_from)
+            robbed_player = self.select_player_to_steal_from(able_to_steal_from,current_player)
             if robbed_player:
                 self.steal_random_resource(robbed_player, current_player)
 
         # if any player has more than 7 cards, they must discard half
         self.robber_discard_resources()
 
-    def move_robber_tile(self) -> Tile:
+    def move_robber_tile(self, current_player: Player) -> Tile:
         """
         Moves the robber to a different tile selected by the player.
 
@@ -69,20 +69,25 @@ class RobberManager:
         robber_tile = self.board.get_robber_tile()
         robber_moved = False
         while not robber_moved:
-            move_robber = int(input("Choosen a Tile [0-18] to move the Robber to: "))
-            if move_robber < 0 or move_robber > 18:
+            choice = InputHandler(
+                value_range=range(0, 18, 1),
+                user=current_player.type,
+                input_type="int",
+                message="Choosen a Tile [0-18] to move the Robber to: ",
+            ).process()
+            if choice < 0 or choice > 18:
                 print("Invalid tile.")
-            elif move_robber == robber_tile.id:
+            elif choice == robber_tile.id:
                 print("Robber must be moved to a different tile.")
             else:
-                new_robber_tile = self.board.set_robber_tile(move_robber)
+                new_robber_tile = self.board.set_robber_tile(choice)
                 new_robber_tile.robber = True
                 robber_tile.robber = False
                 robber_moved = True
 
         return new_robber_tile
 
-    def select_player_to_steal_from(self, able_to_steal_from: set) -> Player:
+    def select_player_to_steal_from(self, able_to_steal_from: set, current_player: Player) -> Player:
         """
         Allows the current player to select another player to steal from.
 
@@ -92,7 +97,12 @@ class RobberManager:
         Returns:
             Player: The selected player to steal from, or None if no valid player
         """
-        select_player = input(f"Choosen a player to steal from {able_to_steal_from}: ")
+        select_player = InputHandler(
+            value_range=able_to_steal_from,
+            user=current_player.type,
+            input_type="player",
+            message=f"Choose a player to steal from {able_to_steal_from}: ",
+        ).process()
 
         robbed_player = [
             player
