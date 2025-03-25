@@ -5,6 +5,9 @@ from src.catan.player.player import Player
 from src.config.config import load_config
 from src.utils.handlers import PathHandler
 
+
+
+
 if __name__ == "__main__":
     config = load_config(PathHandler.config_path)
 
