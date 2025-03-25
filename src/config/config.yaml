@@ -1,0 +1,10 @@
+options:
+  game_type:
+    - DEFAULT: a
+    - AUTO_SETUP: b
+    - BOTS: c
+    - MIXED: d
+  auto_types:
+    - AUTO_SETUP
+
+game_type: AUTO_SETUP
