@@ -45,7 +45,4 @@ class InputHandler:
     def handle_bot_input(self):
         range_input = list(self.value_range)
         bot_desicion = random.choice(range_input)
-        # append bot input to log csv for training, [ID, input, type]
-        # new csv file for each game
-        time.sleep(0.1)
         return bot_desicion
