@@ -52,12 +52,11 @@ class CardDeck:
             VictoryPoint(),
             VictoryPoint(),
             VictoryPoint(),
-            YearOfPlenty(),
-            YearOfPlenty(),
             Monopoly(),
             Monopoly(),
+            YearOfPlenty(),
+            YearOfPlenty(),
         ]
-
         random.shuffle(self.dev_cards)
         return self.dev_cards
 
@@ -75,3 +74,15 @@ class CardDeck:
         selected = self.dev_cards[0]
         self.dev_cards.pop(0)
         return selected
+
+    def deal_card(self) -> Knight | Monopoly | RoadBuilding | VictoryPoint | YearOfPlenty:
+        """
+        Deals a card from the top of the deck.
+
+        Returns:
+            Knight | Monopoly | RoadBuilding | VictoryPoint | YearOfPlenty: The dealt card.
+        """
+        if len(self.dev_cards) > 0:
+            return self.dev_cards.pop()
+        else:
+            raise ValueError("No cards left in the deck")

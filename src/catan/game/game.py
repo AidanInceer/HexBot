@@ -37,6 +37,7 @@ class Game:
         Runs the game loop until the game ends.
         """
         self.board.display()
+        
         if self.game_type in [self.config.options.auto_types]:
             self.auto_setup()
         else:
@@ -72,12 +73,15 @@ class Game:
 
     def check_win(self) -> None:
         """
-        Checks if any player has reached a score of 10 and ends the game if so.
+        Checks if any player has reached a score of 10 or more and ends the game if so.
         """
         for player in self.players:
-            if player.score == 10:
+            if player.score >= 10:
                 self.game_ended = True
-                print(f"{player.color} won!")
+                print(f"\n{player.color} won!")
+                print("\nFinal Scores:")
+                for p in self.players:
+                    print(f"{p.color}: {p.score} points")
                 break
 
     def turn(self, player: Player) -> None:
@@ -117,7 +121,7 @@ class Game:
             elif choice == 2:
                 player.trade(self.board, self.players)
             elif choice == 3:
-                player.dev_card(self.board, self.deck, self.players)
+                player.dev_card(self.board, self.players, self.deck)
             elif choice == 4:
                 self.turn_ended = True
 
