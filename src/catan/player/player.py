@@ -15,7 +15,7 @@ from src.catan.deck.cards import (
     YearOfPlenty,
 )
 from src.catan.deck.deck import CardDeck
-from src.catan.game.auto_setup import setup
+from src.catan.game.setup.auto_setup import setup
 from src.catan.resources.resources import Resources
 from src.interface.input_handler import InputHandler
 
@@ -321,16 +321,53 @@ class Player:
                     ):
                         mapping.append((edge_id, adj_edge))
 
-            # TODO: improve this to handle multiple paths
+            # Handle multiple paths and find the longest one
             if len(mapping) != 0:
                 graph = self.build_adjacency_list(mapping)
-                visited = set()
-                vertex = [key for key in graph.keys()][0]
-                player_lengths[player] = self.dfs(graph, vertex, visited) + 1
+                max_road_length = 0
+                
+                # Try each vertex as a starting point to find the longest path
+                for start_vertex in graph.keys():
+                    # First DFS to find the farthest node
+                    visited = set()
+                    farthest_node, _ = self.find_farthest_node(graph, start_vertex, visited)
+                    
+                    # Second DFS from the farthest node to find the longest path
+                    visited = set()
+                    path_length = self.dfs(graph, farthest_node, visited)
+                    max_road_length = max(max_road_length, path_length)
+                
+                player_lengths[player] = max_road_length + 1
             else:
-                player_lengths[player] = 0
+                player_lengths[player] = len(current_road_ids) if current_road_ids else 0
 
         return player_lengths
+        
+    def find_farthest_node(self, graph: dict, start: int, visited: set, depth=0):
+        """
+        Find the farthest node from the starting vertex using DFS.
+        
+        Args:
+            graph (dict): The graph represented as an adjacency list.
+            start (int): The starting vertex.
+            visited (set): A set to keep track of visited vertices.
+            depth (int): The current depth in the search.
+            
+        Returns:
+            tuple: A tuple containing the farthest node and its distance from the start.
+        """
+        visited.add(start)
+        farthest_node = start
+        max_depth = depth
+        
+        for neighbor in graph[start]:
+            if neighbor not in visited:
+                node, node_depth = self.find_farthest_node(graph, neighbor, visited, depth + 1)
+                if node_depth > max_depth:
+                    farthest_node = node
+                    max_depth = node_depth
+                    
+        return farthest_node, max_depth
 
     def dfs(self, graph: dict, vertex: int, visited: set, depth=0) -> int:
         """
@@ -374,10 +411,16 @@ class Player:
         adjacency_list: dict = {}
         for edge in edges:
             source, destination = edge
+            # Add edge in both directions to create an undirected graph
             if source not in adjacency_list:
                 adjacency_list[source] = []
+            if destination not in adjacency_list:
+                adjacency_list[destination] = []
+            
             adjacency_list[source].append(destination)
+            adjacency_list[destination].append(source)
 
+        # Remove duplicates
         for key in adjacency_list.keys():
             adjacency_list[key] = list(set(adjacency_list[key]))
 
