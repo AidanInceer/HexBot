@@ -6,8 +6,6 @@ from src.config.config import load_config
 from src.utils.handlers import PathHandler
 
 
-
-
 if __name__ == "__main__":
     config = load_config(PathHandler.config_path)
 
@@ -25,7 +23,7 @@ if __name__ == "__main__":
         ],
         deck=deck,
         board=board,
-        game_type=config.game_type,
+        game_type="AUTO_SETUP",
         config=config,
     )
     game.run()

@@ -5,6 +5,7 @@ from src.catan.buildings.buildings import City, Settlement
 from src.catan.player.player import Player
 from src.catan.resources.resources import Brick, Ore, Sheep, Wheat, Wood
 from src.interface.input_handler import InputHandler
+
 TYPES = (
     Brick,
     Ore,
@@ -47,12 +48,10 @@ class RobberManager:
 
         # choose a player to steal a random resource from
         # if the player has no resources, they are skipped
-        able_to_steal_from = self.determine_who_to_steal_from(
-            current_player, new_robber_tile
-        )
+        able_to_steal_from = self.determine_who_to_steal_from(current_player, new_robber_tile)
 
         if able_to_steal_from:
-            robbed_player = self.select_player_to_steal_from(able_to_steal_from,current_player)
+            robbed_player = self.select_player_to_steal_from(able_to_steal_from, current_player)
             if robbed_player:
                 self.steal_random_resource(robbed_player, current_player)
 
@@ -104,19 +103,13 @@ class RobberManager:
             message=f"Choose a player to steal from {able_to_steal_from}: ",
         ).process()
 
-        robbed_player = [
-            player
-            for player in self.players
-            if player.color in select_player and player.total_resources() > 0
-        ]
+        robbed_player = [player for player in self.players if player.color in select_player and player.total_resources() > 0]
         if len(robbed_player) == 0:
             print("No players to steal from.")
 
         return robbed_player
 
-    def steal_random_resource(
-        self, robbed_player: Player, current_player: Player
-    ) -> None:
+    def steal_random_resource(self, robbed_player: Player, current_player: Player) -> None:
         """
         Steals a random resource from the robbed player and gives it to the current player.
 
@@ -143,13 +136,9 @@ class RobberManager:
         robbed_player.resources[random_resource].count -= 1
         current_player.resources[random_resource].count += 1
 
-        print(
-            f"{current_player.color} stole {random_resource} from {robbed_player.color}."
-        )
+        print(f"{current_player.color} stole {random_resource} from {robbed_player.color}.")
 
-    def determine_who_to_steal_from(
-        self, current_player: Player, new_robber_tile: Tile
-    ) -> set:
+    def determine_who_to_steal_from(self, current_player: Player, new_robber_tile: Tile) -> set:
         """
         Determines which players can be stolen from based on the new robber tile location.
 

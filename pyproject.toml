@@ -1,36 +1,46 @@
-[tool]
-[tool.poetry]
+[project]
 name = "HexBot"
 version = "1.2.0"
 description = "HexBot"
-authors = ["AidanInceer"]
+authors = [{name = "AidanInceer"}]
 readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "pandas>=2.1.4",
+    "mypy>=1.7.1",
+    "ruff>=0.1.0",
+    "nicegui>=1.4.0",
+    "requests>=2.31.0",
+    "uvicorn>=0.25.0",
+    "pre-commit>=3.6.0",
+    "coverage>=7.3.4",
+    "pytest>=7.4.3",
+    "pytest-cov>=4.1.0",
+    "colorama>=0.4.6",
+    # "torch>=2.1.2", # Torch can be heavy, commenting out unless clearly used in simple bot logic immediately. The User mentioned neural networks later. I'll keep it if it was there, but maybe relax version.
+    "torch>=2.1.2",
+    "bump-my-version>=0.15.3",
+    "commitizen>=3.13.0",
+    "pytest-mock>=3.12.0",
+    "python-box>=7.1.1",
+]
 
-[tool.poetry.dependencies]
-python = "^3.11"
-pandas = "^2.1.4"
-black = "^23.12.0"
-mypy = "^1.7.1"
-flake8 = "^6.1.0"
-fastapi = "^0.105.0"
-requests = "^2.31.0"
-uvicorn = "^0.25.0"
-pre-commit = "^3.6.0"
-coverage = "^7.3.4"
-pytest = "^7.4.3"
-pytest-cov = "^4.1.0"
-bump-my-version = "^0.15.3"
-poetry-plugin-export = "^1.6.0"
-gitchangelog = "^3.0.4"
-commitizen = "^3.13.0"
-pytest-mock = "^3.12.0"
-python-box = "^7.1.1"
-colorama = "^0.4.6"
+[tool.uv]
+dev-dependencies = [
+    "pytest>=7.4.3",
+    "pytest-cov>=4.1.0",
+    "ruff>=0.1.0",
+]
 
+[tool.ruff]
+line-length = 127
+
+[tool.ruff.lint]
+select = ["E", "F"]
+ignore = ["E501"]
 
 [tool.pytest.ini_options]
 filterwarnings = "ignore::DeprecationWarning"
-
 
 [tool.commitizen]
 version = "1.2.0"
@@ -41,15 +51,16 @@ version_files = [
 name = "cz_conventional_commits"
 tag_format = "$major.$minor.$patch"
 version_scheme = "semver"
-version_provider = "poetry"
 update_changelog_on_bump = true
 changelog_incremental = true
 
-
 [tool.mypy]
-python_version = "3.11"
+python_version = "3.13"
 warn_unused_ignores = true
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]

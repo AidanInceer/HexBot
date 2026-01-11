@@ -79,13 +79,13 @@ class Node:
             str: The string representation of the node.
         """
         if self.color == "Red":
-            output = f"{Fore.RED + '(' + str(self.id).zfill(2) +')' + Fore.RESET}"
+            output = f"{Fore.RED + '(' + str(self.id).zfill(2) + ')' + Fore.RESET}"
         elif self.color == "Blue":
-            output = f"{Fore.BLUE + '(' + str(self.id).zfill(2) +')' + Fore.RESET}"
+            output = f"{Fore.BLUE + '(' + str(self.id).zfill(2) + ')' + Fore.RESET}"
         elif self.color == "Green":
-            output = f"{Fore.GREEN + '(' + str(self.id).zfill(2) +')' + Fore.RESET}"
+            output = f"{Fore.GREEN + '(' + str(self.id).zfill(2) + ')' + Fore.RESET}"
         elif self.color == "Yellow":
-            output = f"{Fore.YELLOW + '(' + str(self.id).zfill(2) +')' + Fore.RESET}"
+            output = f"{Fore.YELLOW + '(' + str(self.id).zfill(2) + ')' + Fore.RESET}"
         else:
-            output = f"{'(' + str(self.id).zfill(2) +')'}"
+            output = f"{'(' + str(self.id).zfill(2) + ')'}"
         return output

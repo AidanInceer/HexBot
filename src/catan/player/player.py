@@ -48,9 +48,7 @@ class Player:
     type: None | str = None
     buildings: Buildings = field(default_factory=Buildings)
     resources: Resources = field(default_factory=Resources)
-    cards: List[Knight | VictoryPoint | Monopoly | RoadBuilding | YearOfPlenty] = field(
-        default_factory=list
-    )
+    cards: List[Knight | VictoryPoint | Monopoly | RoadBuilding | YearOfPlenty] = field(default_factory=list)
     longest_road: bool = False
     largest_army: bool = False
     knights_played: int = 0
@@ -59,16 +57,16 @@ class Player:
         """Initialize managers after the dataclass initialization."""
         # Initialize the resource manager
         self.resource_manager = ResourceManager(self.resources)
-        
+
         # Initialize the building manager
         self.building_manager = BuildingManager(self, self.buildings)
-        
+
         # Initialize the road manager
         self.road_manager = RoadManager()
-        
+
         # Initialize the trade manager
         self.trade_manager = TradeManager(self)
-        
+
         # Initialize the development card manager and sync cards
         self.dev_card_manager = DevelopmentCardManager(self)
         self.dev_card_manager.cards = self.cards  # Ensure cards are synced
@@ -84,9 +82,7 @@ class Player:
         print(f"Roll: {roll}")
         return roll
 
-    def build(
-        self, board: Board, players: List[Player], setup: bool = False, auto=False
-    ) -> None:
+    def build(self, board: Board, players: List[Player], setup: bool = False, auto=False) -> None:
         """
         Builds settlements, cities, and roads for the player.
 

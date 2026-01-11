@@ -26,14 +26,9 @@ class CentralConfig(dict):
             if isinstance(value, dict):
                 return CentralConfig(value)
             elif isinstance(value, list):
-                return [
-                    CentralConfig(item) if isinstance(item, dict) else item
-                    for item in value
-                ]
+                return [CentralConfig(item) if isinstance(item, dict) else item for item in value]
             return value
-        raise AttributeError(
-            f"'{type(self).__name__}' object has no attribute '{attr}'"
-        )
+        raise AttributeError(f"'{type(self).__name__}' object has no attribute '{attr}'")
 
     __setattr__ = dict.__setitem__
     __delattr__ = dict.__delitem__

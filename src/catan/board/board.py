@@ -8,9 +8,10 @@ from src.catan.board.edge import Edge
 from src.catan.board.harbor import Harbor
 from src.catan.board.node import Node
 from src.catan.board.terrain import Desert, Fields, Forest, Hills, Mountains, Pasture
-from src.catan.board.tile import Tile   
+from src.catan.board.tile import Tile
 
 from src.catan.buildings.buildings import Settlement
+
 
 @dataclass
 class Board:
@@ -108,6 +109,49 @@ class Board:
             if tile.robber:
                 return tile
 
+    def available_nodes(self, player: str) -> List[int]:
+        player_edges = [edge for edge in self.edges if edge.color == player]
+
+        player_adj_nodes = []
+        for edge in player_edges:
+            for node_id in edge.near_nodes():
+                player_adj_nodes.append(node_id)
+
+        player_adj_nodes = list(set(player_adj_nodes))
+
+        available_nodes = []
+        for node_id in player_adj_nodes:
+            adj_node_occupied_by_other_color = any(
+                [self.nodes[adj_node_id].color not in [player, None] for adj_node_id in self.nodes[node_id].nodes]
+            )
+            if not self._node(node_id).building and not adj_node_occupied_by_other_color:
+                available_nodes.append(node_id)
+        return available_nodes
+
+    def available_nodes_city(self, player: str) -> List[int]:
+        return [node.id for node in self.nodes if node.color == player and isinstance(node.building, Settlement)]
+
+    def available_edges(self, player: str) -> List[int]:
+        player_edges = [edge for edge in self.edges if edge.color == player]
+
+        available_edges = []
+
+        for edge in player_edges:
+            for adj_edge_id in edge.edges:
+                edge = self.edges[adj_edge_id]
+                if edge.occupied is False:
+                    available_edges.append(edge.id)
+        return available_edges
+
+    def available_start_edges(self, player: str) -> List[int]:
+        starting_edges = []
+        starting_nodes = [node for node in self.nodes if node.color == player]
+        for node in starting_nodes:
+            occupied = [True for edge in node.edges if self.edges[edge].occupied]
+            if not occupied:
+                [starting_edges.append(edge) for edge in node.edges]
+        return starting_edges
+
     def generate(self) -> None:
         """
         Generates the nodes, edges, harbors, and tiles for the board.
@@ -171,21 +215,11 @@ class Board:
         """
         tile_ids = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
 
-        tile_types = (
-            [Desert()]
-            + [Fields()] * 4
-            + [Forest()] * 4
-            + [Pasture()] * 4
-            + [Mountains()] * 3
-            + [Hills()] * 3
-        )
+        tile_types = [Desert()] + [Fields()] * 4 + [Forest()] * 4 + [Pasture()] * 4 + [Mountains()] * 3 + [Hills()] * 3
         # TODO: improve this shuffle
         random.shuffle(tile_types)
 
-        self.tiles = [
-            Tile(type=tile_type, id=tile_id)
-            for tile_type, tile_id in zip(tile_types, tile_ids)
-        ]
+        self.tiles = [Tile(type=tile_type, id=tile_id) for tile_type, tile_id in zip(tile_types, tile_ids)]
 
         for tile in self.tiles:
             if isinstance(tile.type, Desert):
@@ -209,15 +243,15 @@ class Board:
                 tile.token = random.choice(tokens)
                 tokens.remove(tile.token)
         return self.tiles
-        
+
     def fetch_best_available_node(self, building_type: str = "settlement", player_color: str = None) -> List[tuple]:
         """
         Returns the top 3 best available nodes to build on, sorted by probability.
-        
+
         Args:
             building_type (str): Type of building to check for ("settlement" or "city")
             player_color (str): Color of the player (required for city placement)
-        
+
         Returns:
             List[tuple]: List of tuples (node_id, probability) for the top 3 nodes,
                         sorted in descending order by probability.
@@ -232,7 +266,7 @@ class Board:
             9: 4,
             10: 3,
             11: 2,
-            12: 1
+            12: 1,
         }
 
         best_nodes = []
@@ -243,11 +277,7 @@ class Board:
             if building_type == "settlement":
                 valid_location = not node.occupied
             else:  # city
-                valid_location = (
-                    node.occupied 
-                    and node.color == player_color 
-                    and isinstance(node.building, Settlement)
-                )
+                valid_location = node.occupied and node.color == player_color and isinstance(node.building, Settlement)
 
             if valid_location:
                 tile_ids = node.near_tiles()
@@ -264,33 +294,33 @@ class Board:
     def fetch_best_available_edge(self, player_color: str, dev_card: bool = False) -> List[int]:
         """
         Returns the best available edges to build roads on.
-        
+
         Args:
             player_color (str): Color of the player
             dev_card (bool): Whether this is being called for a development card road (ignores resource costs)
-        
+
         Returns:
             List[int]: List of valid edge IDs for road placement
         """
         valid_edges = []
-        
+
         for edge in self.edges:
             if not edge.occupied:
                 nearby_edge_ids = edge.edges
                 nearby_node_ids = edge.nodes
                 nearby_edge_colors = [self.edges[e].color for e in nearby_edge_ids]
                 nearby_nodes_colors = [self.nodes[n].color for n in nearby_node_ids]
-                
+
                 # Valid if connected to player's existing road or settlement/city
                 if player_color in (nearby_edge_colors + nearby_nodes_colors):
                     valid_edges.append(edge.id)
-    
+
         return valid_edges if valid_edges else []
 
     def display(self) -> None:
-        """
-        Displays the board.
-        """
+        print(self.display_str())
+
+    def display_str(self) -> str:
         n, e, i, t, p = [], [], [], [], []
         # create a lists of all nodes, edges, tiles and harbors.
         for j in range(54):
@@ -354,4 +384,4 @@ class Board:
                                                    {n[52]}--{e[71]}--{n[53]}
 
 ==========================================================================================="""
-        print(board)
+        return board

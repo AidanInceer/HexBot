@@ -10,11 +10,11 @@ from src.interface.input_handler import InputHandler
 
 class BuildingManager:
     """Manages a player's building operations."""
-    
+
     def __init__(self, player, buildings=None):
         self.player = player
         self.buildings = buildings or Buildings()
-    
+
     def build_settlement(self, board: Board, players: List, auto: bool = False) -> None:
         """
         Builds a settlement on the game board.
@@ -44,7 +44,7 @@ class BuildingManager:
             if not available_nodes:
                 print("No valid settlement locations available")
                 return
-                
+
             node_id = InputHandler(
                 value_range=available_nodes,
                 user=self.player.type,
@@ -91,7 +91,7 @@ class BuildingManager:
             if not available_nodes:
                 print("No valid city locations available")
                 return
-                
+
             node_id = InputHandler(
                 value_range=available_nodes,
                 user=self.player.type,
@@ -100,9 +100,7 @@ class BuildingManager:
             ).process()
 
             # Check if there is a settlement at the node.
-            if board.nodes[node_id].occupied and isinstance(
-                board.nodes[node_id].building, Settlement
-            ):
+            if board.nodes[node_id].occupied and isinstance(board.nodes[node_id].building, Settlement):
                 # Remove the settlement and replace it with a city at the same node.
                 self.replace_settlement(node_id=node_id)
 
@@ -207,7 +205,7 @@ class BuildingManager:
         if not available_edges:
             print("No valid road locations available.")
             return
-    
+
         edge_id = InputHandler(
             value_range=available_edges,
             user=self.player.type,
@@ -218,9 +216,7 @@ class BuildingManager:
         nearby_node_ids = board.edges[edge_id].nodes
         nearby_edge_colors = [board.edges[edge].color for edge in nearby_edge_ids]
         nearby_nodes_colors = [board.nodes[node].color for node in nearby_node_ids]
-        if board.edges[edge_id].occupied is False and self.player.color in (
-            nearby_edge_colors + nearby_nodes_colors
-        ):
+        if board.edges[edge_id].occupied is False and self.player.color in (nearby_edge_colors + nearby_nodes_colors):
             road = Road(self.player.color, edge_id)
             self.player.resource_manager.deduct_road_cost()
 
@@ -247,7 +243,7 @@ class BuildingManager:
         if not available_edges:
             print("No valid road locations available.")
             return
-        
+
         edge_id = InputHandler(
             value_range=available_edges,
             user=self.player.type,
@@ -258,9 +254,7 @@ class BuildingManager:
         nearby_node_ids = board.edges[edge_id].nodes
         nearby_edge_colors = [board.edges[edge].color for edge in nearby_edge_ids]
         nearby_nodes_colors = [board.nodes[node].color for node in nearby_node_ids]
-        if board.edges[edge_id].occupied is False and self.player.color in (
-            nearby_edge_colors + nearby_nodes_colors
-        ):
+        if board.edges[edge_id].occupied is False and self.player.color in (nearby_edge_colors + nearby_nodes_colors):
             road = Road(self.player.color, edge_id)
             self.buildings.roads.append(road)
             board.edges[edge_id].occupied = True

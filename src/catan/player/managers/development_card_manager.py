@@ -16,11 +16,11 @@ from src.interface.input_handler import InputHandler
 
 class DevelopmentCardManager:
     """Manages development cards for a player."""
-    
+
     def __init__(self, player):
         self.player = player
         self.cards = []
-    
+
     def dev_card(self, board: Board, players: List, deck: CardDeck) -> None:
         """
         Allows the player to interact with development cards.
@@ -42,7 +42,7 @@ class DevelopmentCardManager:
             self.select_dev_card_to_play(board, players)
         elif choice == 3:
             pass
-    
+
     def collect_dev_card(self, deck: CardDeck) -> None:
         """
         Collects a development card from the given deck if the player has enough resources.
@@ -59,7 +59,7 @@ class DevelopmentCardManager:
             if len(deck.dev_cards) == 0:
                 print("No development cards left in the deck")
                 return
-                
+
             # Remove the amount of resources needed for dev card.
             self.player.resource_manager.deduct_dev_card_cost()
             # Get a card from the deck
@@ -68,7 +68,7 @@ class DevelopmentCardManager:
             self.cards.append(card)
         else:
             print("Not enough resources to collect a development card")
-    
+
     def select_dev_card_to_play(self, board: Board, players: List) -> None:
         """
         Allows the player to select a development card to play.
@@ -83,7 +83,7 @@ class DevelopmentCardManager:
         # Display the cards the player has
         if len(self.cards) > 0:
             print("Development cards:")
-            
+
             # Get the input for which card to play
             choice = InputHandler(
                 value_range=range(1, len(self.cards) + 1),
@@ -91,12 +91,12 @@ class DevelopmentCardManager:
                 input_type="int",
                 message="Select a card to play: ",
             ).process()
-            
+
             # Play the card
             self.play_dev_card(self.cards[choice - 1], board, players)
         else:
             print("You have no development cards")
-    
+
     def play_dev_card(
         self,
         card: Knight | VictoryPoint | Monopoly | RoadBuilding | YearOfPlenty,
@@ -116,7 +116,7 @@ class DevelopmentCardManager:
         """
         # Remove the card from the player's hand
         self.cards.remove(card)
-        
+
         # Play the card
         if isinstance(card, Knight):
             self.play_knight(board, players)
@@ -128,7 +128,7 @@ class DevelopmentCardManager:
             self.play_road_building(board, players)
         elif isinstance(card, YearOfPlenty):
             self.play_year_of_plenty()
-    
+
     def play_knight(self, board: Board, players: List) -> None:
         """
         Activates the knight and checks if the player has the largest army.
@@ -142,7 +142,7 @@ class DevelopmentCardManager:
         """
         self.activate_knight(board, players)
         self.check_largest_army(players)
-    
+
     def activate_knight(self, board: Board, players: List) -> None:
         """
         Activates a knight card for the player.
@@ -157,7 +157,7 @@ class DevelopmentCardManager:
         self.player.knights_played += 1
         # Implementation details for activating knight
         pass
-    
+
     def check_largest_army(self, players: List) -> None:
         """
         Checks if the current player has the largest army in the game and updates the scores accordingly.
@@ -175,18 +175,18 @@ class DevelopmentCardManager:
             if player.knights_played >= 3 and player.knights_played > max_knights:
                 max_knights = player.knights_played
                 max_player = player
-        
+
         # Reset largest army status for all players
         for player in players:
             if player.largest_army:
                 player.score -= 2
                 player.largest_army = False
-        
+
         # Assign largest army to the player with the largest army
         if max_player is not None:
             max_player.largest_army = True
             max_player.score += 2
-    
+
     def play_victory_point(self) -> None:
         """
         Increases the player's score by 1 and prints a message indicating that a Victory Point card was played.
@@ -196,7 +196,7 @@ class DevelopmentCardManager:
         """
         self.player.score += 1
         print("You played a Victory Point card")
-    
+
     def play_monopoly(self, players: List) -> None:
         """
         Monopolizes a specific resource from other players.
@@ -209,7 +209,7 @@ class DevelopmentCardManager:
         """
         # Implementation details for monopoly
         pass
-    
+
     def play_road_building(self, board: Board, players: List) -> None:
         """
         Plays the Road Building development card.
@@ -224,7 +224,7 @@ class DevelopmentCardManager:
         # Build two roads for free
         for _ in range(2):
             self.player.building_manager.build_road(board, players, self.player.road_manager, dev_card=True)
-    
+
     def play_year_of_plenty(self) -> None:
         """
         Allows the player to collect two resources of their choice.
