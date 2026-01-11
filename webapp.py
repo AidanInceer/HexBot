@@ -61,61 +61,113 @@ def index():
     with ui.column().classes("w-full h-screen items-center justify-center bg-gray-900 text-white p-4"):
         ui.label("HexBot - Catan").classes("text-4xl font-bold mb-4 text-amber-500")
 
-        with ui.row().classes("w-full max-w-7xl gap-4"):
+        with ui.row().classes("w-full max-w-7xl gap-4 items-start justify-center"):
             # Left Column: Game Board
-            with ui.card().classes("w-2/3 h-[600px] bg-gray-800 border-gray-700").style(f"background-color: {Palette.WATER}"):
-                # Container for SVG
-                board_container = ui.element("div").classes("w-full h-full flex items-center justify-center")
-                renderer = HexGridRenderer(board_container)
+            with ui.column().classes("w-1/2 gap-4"):
+                with ui.card().classes("w-full h-[600px] bg-gray-800 border-gray-700").style(f"background-color: {Palette.WATER}"):
+                    # Container for SVG
+                    board_container = ui.element("div").classes("w-full h-full flex items-center justify-center")
+                    renderer = HexGridRenderer(board_container)
+                
+                # Legend
+                with ui.card().classes("w-full bg-gray-800 border-gray-700 p-2"):
+                    ui.label("Terrain Key").classes("text-sm font-bold text-gray-400 mb-2")
+                    with ui.row().classes("gap-4 flex-wrap"):
+                        legend_items = [
+                            ("Forest", Palette.WOOD),
+                            ("Hills", Palette.BRICK), 
+                            ("Pasture", Palette.SHEEP),
+                            ("Fields", Palette.WHEAT),
+                            ("Mountains", Palette.ORE),
+                            ("Desert", Palette.DESERT)
+                        ]
+                        for name, color in legend_items:
+                            with ui.row().classes("items-center gap-2"):
+                                ui.element("div").classes("w-4 h-4 rounded-full").style(f"background-color: {color}; border: 1px solid white;")
+                                ui.label(name).classes("text-xs")
 
             # Right Column: Controls & Log
-            with ui.column().classes("w-1/3 gap-4"):
+            with ui.column().classes("w-1/2 gap-4 h-[600px]"):
                 # Input Area
-                with ui.card().classes("w-full bg-gray-800 border-gray-700 p-4"):
+                with ui.card().classes("w-full bg-gray-800 border-gray-700 p-4 min-h-[150px]"):
                     ui.label("Actions").classes("text-xl font-bold mb-2")
                     input_container = ui.column().classes("w-full gap-2")
 
                 # Log Area
-                with ui.card().classes("w-full h-96 bg-gray-800 border-gray-700 flex-grow"):
+                with ui.card().classes("w-full bg-gray-800 border-gray-700 flex-grow"):
                     ui.label("Game Log").classes("text-sm text-gray-400 mb-2")
-                    log_view = ui.log().classes("w-full h-full text-sm font-mono")
+                    log_view = ui.log().classes("w-full h-full text-sm font-mono p-2")
+
+    def parse_options(message: str, values: list):
+        """
+        Parses the message string to map value integers to labels.
+        Example: "1=Build, 2=Trade" -> {1: "Build", 2: "Trade"}
+        """
+        import re
+        options = {}
+        # improved regex to capture "1=Something With Spaces," or "1=Build"
+        # look for digit=... until comma or end of string
+        matches = re.findall(r'(\d+)=([^,]+)', message)
+        
+        valid_map = {}
+        for val_str, label in matches:
+            try:
+                val = int(val_str)
+                if val in values:
+                    valid_map[val] = label.strip()
+            except ValueError:
+                pass
+        
+        return valid_map
 
     # State processing
     def process_updates():
-        # Display Updates
-        while not bridge.display_queue.empty():
-            type_, data = bridge.display_queue.get()
-            if type_ == "msg":
-                log_view.push(data)
-            elif type_ == "board":
-                # Render the board using the new renderer
-                renderer.render_board(data)
+        try:
+            # Display Updates
+            while not bridge.display_queue.empty():
+                type_, data = bridge.display_queue.get()
+                if type_ == "msg":
+                    log_view.push(data)
+                elif type_ == "board":
+                    # Render the board using the new renderer
+                    renderer.render_board(data)
 
-        # Input Requests
-        if not bridge.input_request_queue.empty():
-            req = bridge.input_request_queue.get()
-            with input_container:
-                input_container.clear()
-                ui.label(req["message"]).classes("text-lg")
-
-                vals = req["value_range"]
-
-                def make_choice(v):
-                    bridge.input_response_queue.put(v)
+            # Input Requests
+            if not bridge.input_request_queue.empty():
+                req = bridge.input_request_queue.get()
+                with input_container:
                     input_container.clear()
-                    ui.spinner("dots")  # Show waiting state
+                    
+                    # Check if we can parse labels from the message
+                    message = req["message"]
+                    vals = req["value_range"]
+                    
+                    parsed_labels = parse_options(message, vals)
+                    
+                    ui.label(message).classes("text-lg mb-2")
 
-                # Basic heuristic for input type
-                if len(vals) < 15:
-                    # Buttons for small sets
-                    with ui.row().classes("flex-wrap gap-2"):
-                        for v in vals:
-                            ui.button(str(v), on_click=lambda v=v: make_choice(v)).props("outline color=accent")
-                else:
-                    # Dropdown for large sets
-                    ui.select(options=vals, on_change=lambda e: make_choice(e.value)).props(
-                        'label="Select Option" color=accent'
-                    ).classes("w-full")
+                    def make_choice(v):
+                        bridge.input_response_queue.put(v)
+                        input_container.clear()
+                        ui.spinner("dots")  # Show waiting state
+
+                    # Basic heuristic for input type
+                    if len(vals) < 15:
+                        # Buttons for small sets
+                        with ui.row().classes("flex-wrap gap-2"):
+                            for v in vals:
+                                label = parsed_labels.get(v, str(v))
+                                ui.button(label, on_click=lambda v=v: make_choice(v)).props("outline color=accent").classes("min-w-[40px]")
+                    else:
+                        # Dropdown for large sets
+                        # Use parsed labels if available
+                        options_dict = {v: parsed_labels.get(v, str(v)) for v in vals}
+                        ui.select(options=options_dict, on_change=lambda e: make_choice(e.value)).props(
+                            'label="Select Option" color=accent'
+                        ).classes("w-full")
+        except Exception as e:
+            print(f"Error in process_updates: {e}\n{traceback.format_exc()}")
+            ui.notify(f"UI Error: {e}", type="negative")
 
     ui.timer(0.1, process_updates)
 
