@@ -28,6 +28,7 @@ class HexGridRenderer:
         self.tile_positions = {}
 
     def render_board(self, board):
+        print(f"Rendering board with {len(board.tiles)} tiles")
         self.container.clear()
         with self.container:
             with ui.element("svg").props(
@@ -85,9 +86,8 @@ class HexGridRenderer:
         # Token / Number
         if tile.token:
             ui.element("circle").props(f'cx="{x}" cy="{y}" r="15" fill="white"')
-            ui.element("text").props(f'x="{x}" y="{y}" text-anchor="middle" dy=".3em" font-weight="bold"').text(
-                str(tile.token)
-            )
+            t = ui.element("text").props(f'x="{x}" y="{y}" text-anchor="middle" dy=".3em" font-weight="bold"')
+            t.text = str(tile.token)
 
         # Robber
         if tile.robber:

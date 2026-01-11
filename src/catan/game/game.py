@@ -2,6 +2,8 @@ import random
 from dataclasses import dataclass, field
 from typing import List
 
+from colorama import Fore
+
 from src.catan.board.board import Board
 from src.catan.board.tile import Tile
 from src.catan.buildings.buildings import City, Settlement

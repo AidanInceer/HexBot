@@ -1,7 +1,9 @@
-from nicegui import ui, app
+
 import threading
 import queue
-import asyncio
+import traceback
+from nicegui import ui, app
+
 from src.catan.game.game import Game
 from src.catan.board.board import Board
 from src.catan.deck.deck import CardDeck
@@ -10,53 +12,12 @@ from src.config.config import load_config
 from src.utils.handlers import PathHandler
 from src.interface.web.renderer import HexGridRenderer
 from src.interface.web.styles import Palette
+from src.interface.web.bridge import GameBridge
+from src.interface.web.handlers import WebDisplayHandler, WebInputHandler
 
-
-# --- Communications ---
-class GameBridge:
-    def __init__(self):
-        self.display_queue = queue.Queue()
-        self.input_request_queue = queue.Queue()
-        self.input_response_queue = queue.Queue()
-
-    def push_msg(self, msg):
-        self.display_queue.put(("msg", msg))
-
-    def push_board_update(self, board):
-        # Pass the whole board object?
-        # Thread safety warning: Modifying board in thread while reading here might be risky.
-        # But for visualization it's usually fine if we don't mutate during render.
-        # Better to pass a lightweight state, but Board is complex.
-        self.display_queue.put(("board", board))
-
-    def request_input(self, value_range, input_type, message):
-        self.input_request_queue.put({"value_range": list(value_range), "input_type": input_type, "message": message})
-        return self.input_response_queue.get()
-
-
+# --- Initialization ---
+# Create the synchronized bridge instance
 bridge = GameBridge()
-
-
-# --- Handlers (Run in Game Thread) ---
-class WebDisplayHandler:
-    def message(self, msg: str) -> None:
-        bridge.push_msg(msg)
-
-    def update_board(self, board) -> None:
-        # We need to make a copy or extract data to avoid thread issues if possible,
-        # but for now we pass reference.
-        # Ideally we'd serialize relevant board state here.
-        bridge.push_board_update(board)
-
-
-class WebInputHandler:
-    def process(self, value_range, user, input_type, message=None):
-        if user == "bot":
-            import random
-
-            return random.choice(list(value_range))
-        return bridge.request_input(value_range, input_type, message)
-
 
 # --- Game Thread ---
 def game_thread_func():
@@ -65,6 +26,10 @@ def game_thread_func():
         deck = CardDeck().generate_dev_cards()
         board = Board()
         board.generate()
+
+        # Initial render push
+        # print("Initial board generated, pushing update...")
+        bridge.push_board_update(board)
 
         game = Game(
             players=[
@@ -77,12 +42,14 @@ def game_thread_func():
             board=board,
             game_type="AUTO_SETUP",
             config=config,
-            display_handler=WebDisplayHandler(),
-            input_handler=WebInputHandler(),
+            display_handler=WebDisplayHandler(bridge),
+            input_handler=WebInputHandler(bridge),
         )
         game.run()
     except Exception as e:
-        bridge.push_msg(f"Game Error: {e}")
+        error_msg = f"Game Error: {e}\n{traceback.format_exc()}"
+        print(error_msg)
+        bridge.push_msg(error_msg)
 
 
 # --- UI (Main Thread) ---

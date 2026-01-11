@@ -4,7 +4,7 @@ from nicegui import ui
 class Palette:
     # Resources
     WOOD = "#228B22"  # ForestGreen
-    BRIGK = "#B22222"  # FireBrick
+    BRICK = "#B22222"  # FireBrick
     SHEEP = "#90EE90"  # LightGreen (Pasture)
     WHEAT = "#DAA520"  # GoldenRod
     ORE = "#708090"  # SlateGray
@@ -26,7 +26,7 @@ class Palette:
     def get_tile_color(tile_type_name: str):
         mapping = {
             "Forest": Palette.WOOD,
-            "Hills": Palette.BRIGK,
+            "Hills": Palette.BRICK,
             "Pasture": Palette.SHEEP,
             "Fields": Palette.WHEAT,
             "Mountains": Palette.ORE,
